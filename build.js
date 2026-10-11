@@ -2791,6 +2791,8 @@ const html = `<!DOCTYPE html>
       }
     }
 
+    let passTimeout = null;
+
     function triggerPassAndPlay(nextTurn, nextPlayer) {
       sound.playPass();
       const overlay = document.getElementById('pass-overlay');

@@ -2663,6 +2663,8 @@
       }
     }
 
+    let passTimeout = null;
+
     function triggerPassAndPlay(nextTurn, nextPlayer) {
       sound.playPass();
       const overlay = document.getElementById('pass-overlay');
