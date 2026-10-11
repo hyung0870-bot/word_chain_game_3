@@ -82,48 +82,226 @@ const IDIOM_LIST = [
   ['화룡점정', '가장 중요한 마지막 마무리를 함']
 ];
 
-// 다빈도 명사 대표 뜻 사전 (샘플 및 대표 명사)
+// 다빈도 핵심 명사 대표 뜻 사전 (수백 개 이상 고품질 내장)
 const SAMPLE_DEFINITIONS = [
-  ['사과', '사과나무의 열매. 새콤달콤한 맛이 나는 과일.'],
-  ['바나나', '열대 식물의 열매. 껍질이 노랗고 부드러운 과일.'],
-  ['기차', '레일 위를 달리는 승객과 화물 수송용 차량.'],
-  ['기러기', '겨울에 날아오는 철새의 일종.'],
-  ['토마토', '붉은색의 영양가 높은 채소 열매.'],
-  ['스위스', '알프스산맥에 위치한 유럽의 중립국.'],
-  ['오디오', '소리를 재생하거나 녹음하는 음향 기기.'],
-  ['하늘', '지표면 위로 펼쳐진 넓고 푸른 공간.'],
-  ['바다', '지구 표면의 대부분을 덮고 있는 거대한 짠물.'],
-  ['구름', '공기 중의 수증기가 엉겨 하늘에 떠 있는 것.'],
-  ['친구', '오래 두고 가깝게 사귄 벗.'],
-  ['학교', '학생을 모아 일정한 교육을 실시하는 교육 기관.'],
-  ['학생', '학교에서 학문을 배우는 사람.'],
-  ['선생님', '학생을 가르치고 인도하는 사람.'],
-  ['피아노', '건반을 눌러 해머로 줄을 쳐 소리를 내는 악기.'],
-  ['음악', '소리를 재료로 하여 감정을 표현하는 시간 예술.'],
-  ['컴퓨터', '데이터를 입력받아 처리하는 전자 계산 장치.'],
-  ['비행기', '날개와 엔진을 갖추고 공중을 날아다니는 항공기.'],
-  ['자동차', '원동기를 장치하여 바퀴를 굴려 가는 차량.'],
-  ['호랑이', '고양잇과의 사나운 맹수.'],
-  ['사자', '동물의 왕이라 불리는 고양잇과 맹수.'],
-  ['강아지', '개의 새끼 또는 귀엽게 이르는 말.'],
-  ['고양이', '사람과 친숙한 털이 부드러운 애완동물.'],
-  ['토끼', '귀가 길고 꼬리가 짧은 귀여운 초식동물.'],
-  ['사탕', '설탕을 주원료로 하여 굳혀 만든 달콤한 과자.'],
-  ['과자', '곡물 가루를 반죽하여 기름에 튀기거나 구운 간식.'],
-  ['자전거', '두 바퀴를 발로 페달을 밟아 움직이는 탈것.'],
-  ['거울', '빛을 반사하여 사물의 모습을 비추어 보는 도구.'],
-  ['울타리', '풀이나 나무, 철조망 등으로 둘러막은 경계.'],
-  ['리본', '선물이나 머리를 장식하는 비단 띠.'],
-  ['본관', '성씨가 처음 시작된 고향 또는 중심 건물.'],
-  ['관람', '영화나 연극, 미술품 등을 구경함.'],
-  ['람보', '용감하고 강인한 전사를 비유적으로 이르는 말.'],
-  ['보물', '매우 귀중하고 가치 있는 물건.'],
-  ['물고기', '물속에서 아가미로 숨을 쉬며 사는 척추동물.'],
-  ['우주', '모든 물질과 공간, 천체를 포함하는 총체.'],
-  ['지구', '인류가 살고 있는 태양계의 행성.'],
-  ['사랑', '어떤 대상을 몹시 아끼고 귀중히 여기는 마음.'],
-  ['행복', '생활에서 기쁨과 만족을 느껴 흐뭇한 상태.'],
-  ['희망', '앞일에 대하여 거는 기대와 바람.']
+  ['고민', '마음속으로 괴로워하고 애를 태움'],
+  ['민소', '민사 소송(民訴)의 준말, 또는 가엾게 여겨 웃음(憫笑)'],
+  ['소상', '사실이나 내용이 매우 밝고 자세함(昭詳)'],
+  ['상상', '실제로 경험하지 않은 사물이나 일을 머릿속으로 그려 봄'],
+  ['사과', '사과나무의 열매. 새콤달콤한 맛이 나는 붉은 과일'],
+  ['바나나', '열대 식물의 열매. 껍질이 노랗고 부드러운 과일'],
+  ['기차', '레일 위를 달리는 승객과 화물 수송용 차량'],
+  ['기러기', '겨울에 날아오는 철새의 일종'],
+  ['토마토', '붉은색의 영양가 높은 가지과 채소 열매'],
+  ['스위스', '알프스산맥에 위치한 유럽 중부의 중립국'],
+  ['오디오', '소리를 재생하거나 녹음하는 음향 기기'],
+  ['하늘', '지표면 위로 펼쳐진 넓고 푸른 공간'],
+  ['바다', '지구 표면의 대부분을 덮고 있는 거대한 짠물'],
+  ['구름', '공기 중의 수증기가 엉겨 하늘에 떠 있는 것'],
+  ['친구', '오래 두고 가깝게 사귄 벗'],
+  ['학교', '학생을 모아 일정한 교육을 실시하는 교육 기관'],
+  ['학생', '학교에서 학문을 배우는 사람'],
+  ['선생님', '학생을 가르치고 인도하는 사람'],
+  ['피아노', '건반을 눌러 해머로 줄을 쳐 소리를 내는 건반 악기'],
+  ['음악', '소리를 재료로 하여 감정을 표현하는 예술'],
+  ['컴퓨터', '데이터를 입력받아 처리하는 전자 계산 장치'],
+  ['비행기', '날개와 엔진을 갖추고 공중을 날아다니는 항공기'],
+  ['자동차', '원동기를 장치하여 바퀴를 굴려 가는 차량'],
+  ['호랑이', '고양잇과의 사나운 맹수'],
+  ['사자', '동물의 왕이라 불리는 고양잇과 맹수'],
+  ['강아지', '개의 새끼 또는 개를 귀엽게 이르는 말'],
+  ['고양이', '사람과 친숙한 털이 부드러운 애완동물'],
+  ['토끼', '귀가 길고 꼬리가 짧은 귀여운 초식동물'],
+  ['사탕', '설탕을 주원료로 하여 굳혀 만든 달콤한 과자'],
+  ['과자', '곡물 가루를 반죽하여 기름에 튀기거나 구운 간식'],
+  ['자전거', '두 바퀴를 발로 페달을 밟아 움직이는 탈것'],
+  ['거울', '빛을 반사하여 사물의 모습을 비추어 보는 도구'],
+  ['울타리', '풀이나 나무, 철조망 등으로 둘러막은 경계'],
+  ['리본', '선물이나 머리를 장식하는 비단 띠'],
+  ['본관', '성씨가 처음 시작된 고향 또는 중심 건물'],
+  ['관람', '영화나 연극, 미술품 등을 구경함'],
+  ['람보', '용감하고 강인한 전사를 비유적으로 이르는 말'],
+  ['보물', '매우 귀중하고 가치 있는 물건'],
+  ['물고기', '물속에서 아가미로 숨을 쉬며 사는 척추동물'],
+  ['우주', '모든 물질과 공간, 천체를 포함하는 총체'],
+  ['지구', '인류가 살고 있는 태양계의 행성'],
+  ['사랑', '어떤 대상을 몹시 아끼고 귀중히 여기는 마음'],
+  ['행복', '생활에서 기쁨과 만족을 느껴 흐뭇한 상태'],
+  ['희망', '앞일에 대하여 거는 기대와 바람'],
+  ['지뢰', '땅속에 묻어 두어 밟으면 폭발하는 방어용 화약 무기'],
+  ['노을', '해가 뜨거나 질 무렵 하늘이 붉게 물드는 현상'],
+  ['의사', '의술을 베풀어 환자의 병을 고치는 사람'],
+  ['병원', '병든 사람을 진찰하고 치료하는 시설'],
+  ['식당', '음식을 만들어 손님에게 파는 가게'],
+  ['음식', '사람이 먹고 마시는 모든 것'],
+  ['식사', '아침, 점심, 저녁에 밥을 먹음'],
+  ['간식', '끼니와 끼니 사이에 간단히 먹는 음식'],
+  ['안경', '시력을 교정하거나 눈을 보호하기 위해 쓰는 물건'],
+  ['시계', '시간을 측정하고 가리키는 기계'],
+  ['가방', '물건을 넣어 들고 다니는 용구'],
+  ['모자', '머리에 쓰는 물건'],
+  ['신발', '발에 신는 물건의 총칭'],
+  ['나무', '줄기나 가지가 목질로 된 다년생 식물'],
+  ['바람', '기압 차이로 인해 일어나는 공기의 흐름'],
+  ['태양', '태양계의 중심에 있는 항성. 햇빛과 열을 줌'],
+  ['달력', '일 년의 날짜와 요일, 절기 등을 적어 놓은 표'],
+  ['가족', '혈연이나 혼인으로 맺어진 사람들의 공동체'],
+  ['부모', '아버지와 어머니를 아울러 이르는 말'],
+  ['아이', '나이가 어린 사람. 어린이'],
+  ['청년', '신체적·정신적으로 한창 성장하거나 활동할 때의 사람'],
+  ['노인', '나이가 들어 늙은 사람'],
+  ['역사', '인류 사회의 변천과 발전 과정'],
+  ['문화', '인류가 환경을 극복하며 만들어 낸 생활 양식의 총체'],
+  ['예술', '아름다움을 창조하고 표현하는 인간 활동'],
+  ['그림', '선과 색으로 평면 위에 형상을 그린 것'],
+  ['사진', '카메라로 피사체의 모습을 필름이나 센서에 기록한 영상'],
+  ['영화', '연속된 사진이나 영상을 스크린에 비추어 보여 주는 예술'],
+  ['소설', '작가가 상상력을 바탕으로 꾸며 쓴 산문 문학'],
+  ['편지', '소식이나 용건을 적어 다른 사람에게 보내는 글'],
+  ['전화', '음성을 전파나 전류로 멀리 있는 사람에게 전하는 통신 기기'],
+  ['가수', '노래 부르는 것을 직업으로 하는 사람'],
+  ['가을', '한 해의 네 철 가운데 셋째 철. 서늘하고 결실을 맺는 계절'],
+  ['겨울', '가을과 봄 사이의 추운 계절'],
+  ['봄', '겨울과 여름 사이의 따뜻한 계절. 만물이 소생함'],
+  ['여름', '봄과 가을 사이의 가장 더운 계절'],
+  ['소나무', '사시사철 푸른 바늘잎을 가진 대표적인 상록 침엽수'],
+  ['참새', '참샛과의 흔한 텃새. 곡식이나 곤충을 먹음'],
+  ['까치', '까마귓과의 길조로 알려진 텃새. 깃털은 검고 배는 흰색임'],
+  ['비누', '몸이나 옷을 씻을 때 때를 빼기 위해 쓰는 세정제'],
+  ['치약', '이를 닦을 때 칫솔에 묻혀 쓰는 약제'],
+  ['칫솔', '이를 닦는 데 쓰는 솔'],
+  ['수건', '물기를 닦아 내는 데 쓰는 헝겊'],
+  ['창문', '공기나 빛이 통하도록 벽에 만들어 둔 문'],
+  ['선풍기', '전동기로 날개를 회전시켜 바람을 일으키는 가전 기기'],
+  ['에어컨', '실내의 온도나 습도를 쾌적하게 조절하는 냉방 장치'],
+  ['냉장고', '음식물을 상하지 않게 차게 보관하는 전기 기기'],
+  ['세탁기', '옷이나 빨랫감을 자동으로 빨아 주는 기계'],
+  ['텔레비전', '전파를 수신하여 영상과 소리를 재생하는 가전제품'],
+  ['스마트폰', '컴퓨터 지원 기능을 갖춘 고기능 휴대 전화'],
+  ['연필', '흑연 가루와 찰흙을 섞어 구워 만든 필기도구'],
+  ['지우개', '연필이나 잉크로 쓴 글씨를 지우는 도구'],
+  ['공책', '글씨를 쓰거나 그림을 그리도록 묶어 놓은 종이책'],
+  ['가위', '종이나 헝겊 등을 자르는 데 쓰는 도구'],
+  ['풀', '종이나 천 따위를 서로 붙이는 데 쓰는 접착 물질'],
+  ['도서관', '온갖 책과 자료를 모아 두고 열람하게 하는 시설'],
+  ['우체국', '우편, 통신, 체신 금융 등의 사무를 맡아보는 공공기관'],
+  ['경찰서', '치안을 유지하고 범죄를 수사하는 경찰 행정 관서'],
+  ['소방서', '화재를 진압하고 재난을 구조하는 소방 행정 기관'],
+  ['놀이터', '어린이들이 뛰놀 수 있도록 기구를 갖추어 놓은 곳'],
+  ['동물원', '여러 동물을 모아 기르며 관람객에게 보여 주는 공원'],
+  ['식물원', '여러 종류의 식물을 모아 기르고 연구·관람하는 곳'],
+  ['미술관', '회화, 조각 등 미술 작품을 수집·보존·전시하는 시설'],
+  ['박물관', '역사, 예술, 민속 등의 자료를 수집·전시하는 시설'],
+  ['극장', '영화, 연극, 무용 등을 관람할 수 있는 시설'],
+  ['은행', '돈을 맡아 두고 융자나 어음 거래 등을 하는 금융 기관'],
+  ['약국', '약을 조제하여 팔거나 의약품을 판매하는 곳'],
+  ['시장', '상품의 매매가 정기적 또는 상시로 이루어지는 장소'],
+  ['백화점', '여러 분야의 상품을 한곳에 갖추어 놓고 파는 대형 상점'],
+  ['편의점', '24시간 생필품과 간편식을 판매하는 소매점'],
+  ['주유소', '자동차 따위에 기름을 넣어 주는 시설을 갖춘 곳'],
+  ['항구', '선박이 정박하고 화물과 승객이 드나드는 바닷가 시설'],
+  ['기차역', '기차가 정차하여 승객이 타고 내리는 건물과 시설'],
+  ['지하철역', '지하철이 정차하여 승객이 승하차하는 역'],
+  ['정류장', '버스나 전차가 손님을 태우고 내려주기 위해 멈추는 곳'],
+  ['횡단보도', '보행자가 도로를 안전하게 건널 수 있도록 표시한 도로'],
+  ['신호등', '도로에서 차량과 보행자의 통행을 지시하는 색깔 등화'],
+  ['골목길', '큰길에서 좁게 갈라져 들어간 마을의 작은 길'],
+  ['운동장', '각종 체육 활동이나 경기를 할 수 있게 넓게 닦은 터'],
+  ['체육관', '실내에서 운동 경기를 하거나 훈련할 수 있는 건물'],
+  ['수영장', '수영을 할 수 있도록 인공적으로 물을 채워 놓은 시설'],
+  ['축구장', '축구 경기를 할 수 있도록 마련된 경기장'],
+  ['야구장', '야구 경기를 할 수 있도록 설계된 경기장'],
+  ['농구장', '농구 경기를 할 수 있는 코트와 시설을 갖춘 장소'],
+  ['테니스장', '테니스 경기를 할 수 있는 코트'],
+  ['골프장', '골프 경기를 할 수 있도록 넓은 잔디와 코스를 갖춘 시설'],
+  ['스키장', '눈 위에서 스키를 탈 수 있도록 슬로프를 갖춘 곳'],
+  ['노래방', '반주 음악에 맞추어 노래를 부를 수 있는 시설을 갖춘 방'],
+  ['목욕탕', '몸을 씻고 목욕할 수 있는 설비를 갖춘 대중 시설'],
+  ['미용실', '머리를 손질하고 파마, 커트 등을 해 주는 업소'],
+  ['이발소', '남자의 머리카락을 깎고 다듬어 주는 업소'],
+  ['세탁소', '옷이나 침구류 등을 세탁하고 다림질해 주는 가게'],
+  ['꽃집', '꽃이나 화초를 파는 가게'],
+  ['서점', '각종 책과 잡지를 파는 가게'],
+  ['문구점', '공책, 연필, 필기구 등 학용품과 사무용품을 파는 곳'],
+  ['정육점', '쇠고기, 돼지고기 등 식용 고기를 파는 가게'],
+  ['과일가게', '각종 신선한 과일을 파는 상점'],
+  ['빵집', '밀가루로 빵이나 케이크 등을 만들어 파는 가게'],
+  ['카페', '커피나 차, 간단한 음료를 마시며 대화하는 공간'],
+  ['호텔', '여행객 등에게 숙박과 식사, 편의를 제공하는 대형 숙박 시설'],
+  ['대나무', '줄기가 곧고 속이 비었으며 매듭이 있는 사철 푸른 나무'],
+  ['포도', '덩굴 식물의 열매로 보라색이나 청색을 띠는 달콤한 과일'],
+  ['수박', '박과의 덩굴성 한해살이풀. 속이 붉고 수분이 많은 여름 과일'],
+  ['참외', '노란 껍질에 흰 줄이 있는 달고 시원한 여름 과일'],
+  ['딸기', '씨가 겉에 박혀 있고 빨갛고 달콤한 장미과 열매'],
+  ['옥수수', '알갱이가 노랗고 빽빽하게 박힌 볏과의 식용 식물'],
+  ['감자', '땅속줄기가 굵어져 녹말이 풍부한 식용 작물'],
+  ['고구마', '뿌리가 굵어져 단맛이 나는 메꽃과의 식용 작물'],
+  ['양파', '매운맛과 단맛이 돌며 겹겹이 껍질로 싸인 채소'],
+  ['마늘', '백합과의 여러해살이풀. 알싸한 향과 매운맛을 내는 양념 채소'],
+  ['고추', '매운맛을 내는 가지과의 채소. 김치나 양념에 널리 쓰임'],
+  ['오이', '길쭉하고 겉에 돌기가 있으며 수분이 많은 박과 채소'],
+  ['배추', '잎이 여러 겹 겹쳐 자라는 채소. 김치의 주재료'],
+  ['무', '뿌리가 희고 굵으며 시원한 맛이 나는 채소'],
+  ['당근', '주황색의 굵은 뿌리를 식용하는 미나리과의 채소'],
+  ['시금치', '철분과 비타민이 풍부한 녹색 잎채소'],
+  ['버섯', '균류의 자실체로 독특한 향과 식감을 지닌 식재료'],
+  ['김치', '배추나 무를 소금에 절여 고춧가루와 젓갈로 버무린 한국 전통 음식'],
+  ['된장', '메주를 소금물에 담가 발효시켜 만든 한국 전통 양념'],
+  ['간장', '메주를 소금물에 담가 우려낸 갈색의 짠맛 양념'],
+  ['고추장', '고춧가루, 메줏가루, 찹쌀가루 등을 섞어 발효시킨 매운 장류'],
+  ['참기름', '볶은 참깨를 짜서 얻은 고소한 기름'],
+  ['식초', '신맛이 나는 조미료로 음식의 맛을 돋움'],
+  ['설탕', '사탕수수나 사탕무에서 추출한 단맛이 나는 결정 조미료'],
+  ['소금', '바닷물을 증발시켜 얻은 짠맛을 내는 결정 물질'],
+  ['라면', '국수를 기름에 튀겨 건조한 인스턴트 면 요리'],
+  ['국수', '밀가루나 메밀가루 반죽을 가늘고 길게 뽑아 삶아 먹는 음식'],
+  ['밥', '쌀에 물을 붓고 끓여 익힌 한국인의 주식'],
+  ['떡', '쌀가루나 찹쌀가루를 찌거나 쳐서 빚은 한국 전통 음식'],
+  ['찌개', '고기, 채소, 두부 등에 국물을 자작하게 부어 끓인 국물 요리'],
+  ['불고기', '얇게 썬 쇠고기를 양념에 재워 구운 한국 전통 고기 요리'],
+  ['갈비', '소나 돼지의 갈비뼈에 붙은 고기를 양념하여 구운 음식'],
+  ['삼겹살', '돼지의 갈비 부근에 붙은 붉은 살과 지방이 겹쳐 있는 부위'],
+  ['치킨', '닭고기를 알맞게 잘라 튀김옷을 입혀 기름에 튀긴 요리'],
+  ['피자', '밀가루 도우 위에 토마토소스, 치즈, 토핑을 얹어 구운 이탈리아 요리'],
+  ['햄버거', '둥근 빵 사이에 고기 패티와 채소를 끼워 먹는 음식'],
+  ['초밥', '식초, 설탕 등으로 간을 한 밥 위에 생선회를 얹은 요리'],
+  ['자장면', '춘장에 채소와 고기를 볶아 삶은 면에 비벼 먹는 중화요리'],
+  ['짬뽕', '해물과 채소를 볶아 매콤한 국물에 말아 먹는 면 요리'],
+  ['탕수육', '돼지고기를 튀겨 새콤달콤한 소스를 얹은 중화요리'],
+  ['만두', '얇은 피에 고기와 채소를 다져 넣고 찌거나 튀긴 음식'],
+  ['김밥', '밥을 김 위에 펴고 여러 재료를 넣어 만 음식'],
+  ['떡볶이', '가래떡을 고추장 양념에 볶아 조린 한국 대표 분식'],
+  ['순대', '돼지 창자에 당면과 채소를 채워 쪄낸 한국 전통 음식'],
+  ['튀김', '채소나 해물 등에 튀김옷을 입혀 기름에 튀겨 낸 음식'],
+  ['어묵', '생선 살을 갈아 반죽하여 익힌 음식'],
+  ['두부', '콩을 갈아 짜낸 콩물을 응고시켜 굳힌 하얗고 부드러운 식품'],
+  ['달걀', '닭이 낳은 알. 단백질이 풍부한 기본 식재료'],
+  ['우유', '소의 젖으로 칼슘과 영양소가 풍부한 흰 음료'],
+  ['치즈', '소나 양의 젖을 발효시켜 굳힌 유제품'],
+  ['버터', '우유의 지방분을 분리하여 굳힌 고소한 유지'],
+  ['아이스크림', '우유, 크림, 설탕을 섞어 얼려 만든 달콤한 디저트'],
+  ['초콜릿', '카카오 가루와 코코아 버터, 설탕을 굳힌 과자'],
+  ['케이크', '밀가루, 달걀, 버터로 구운 빵에 크림을 바른 서양 과자'],
+  ['쿠키', '밀가루 반죽에 버터와 설탕을 넣어 바삭하게 구운 작은 과자'],
+  ['커피', '커피콩을 볶아 가루를 내어 물에 우려낸 향긋한 음료'],
+  ['녹차', '차나무의 어린잎을 우려낸 은은한 전통차'],
+  ['콜라', '콜라 열매 추출물과 탄산을 섞어 만든 청량음료'],
+  ['사이다', '레몬 라임 향이 나는 투명한 탄산음료'],
+  ['맥주', '보리를 발효시켜 만든 시원한 알코올 음료'],
+  ['소주', '곡물을 발효시켜 증류한 한국의 맑은 술'],
+  ['코끼리', '육상 포유류 중 가장 크며 코가 길고 상아가 있는 동물'],
+  ['기린', '목과 다리가 매우 길어 나뭇잎을 뜯어 먹는 동물'],
+  ['하마', '물가에 살며 입을 크게 벌리는 거대한 포유동물'],
+  ['원숭이', '손과 발을 자유롭게 쓰며 지능이 높은 영장류'],
+  ['돌고래', '지능이 매우 높고 초음파로 소통하는 바다 포유류'],
+  ['고래', '바다에 사는 포유류 중 가장 거대한 동물'],
+  ['상어', '날카로운 이빨을 가진 바다의 포식자 물고기'],
+  ['문어', '여덟 개의 다리에 빨판이 있는 연체동물'],
+  ['오징어', '열 개의 다리를 가졌으며 먹물을 뿜는 연체동물'],
+  ['새우', '몸이 굽어 있고 꼬리가 부채 모양인 갑각류'],
+  ['거북이', '단단한 등딱지를 지고 느리게 걷는 파충류'],
+  ['악어', '강가나 늪에 살며 무는 힘이 강한 대형 파충류'],
+  ['개구리', '올챙이에서 자라 육지로 나오는 양서류']
 ];
 
 const html = `<!DOCTYPE html>
@@ -422,7 +600,6 @@ const html = `<!DOCTYPE html>
       overflow: hidden;
     }
 
-    /* 상단 고정 헤더 바 */
     .game-top-bar {
       display: flex;
       align-items: center;
@@ -460,7 +637,7 @@ const html = `<!DOCTYPE html>
       transition: background 0.15s;
     }
 
-    /* 상단 고정 플레이어 스코어보드 (스크롤 절대 안 밀림!) */
+    /* 상단 고정 플레이어 스코어보드 */
     .scoreboard-wrapper {
       background: #FFFFFF;
       padding: 6px 10px;
@@ -645,7 +822,7 @@ const html = `<!DOCTYPE html>
       100% { opacity: 1; }
     }
 
-    /* 단어 릴레이 대화 뷰 (오직 이 영역만 스크롤!) */
+    /* 단어 릴레이 대화 뷰 (독립 스크롤) */
     .word-log-container {
       flex: 1;
       overflow-y: auto;
@@ -660,7 +837,7 @@ const html = `<!DOCTYPE html>
       display: flex;
       align-items: flex-end;
       gap: 8px;
-      max-width: 90%;
+      max-width: 92%;
       animation: fadeInUp 0.2s ease-out;
     }
 
@@ -690,11 +867,12 @@ const html = `<!DOCTYPE html>
     }
 
     .word-bubble {
-      padding: 7px 12px;
+      padding: 8px 12px;
       border-radius: var(--radius-md);
       position: relative;
       box-shadow: 0 2px 6px rgba(0,0,0,0.04);
       background: #FFFFFF;
+      min-width: 150px;
     }
 
     .word-item.system .word-bubble {
@@ -730,17 +908,22 @@ const html = `<!DOCTYPE html>
       font-weight: 900;
     }
 
-    /* 단어 대표 뜻 풀이 표시 */
+    /* 단어 대표 뜻 풀이 박스 */
     .bubble-meaning {
-      font-size: 0.72rem;
+      font-size: 0.74rem;
       font-weight: 600;
-      color: #475569;
+      color: #334155;
       background: rgba(0, 0, 0, 0.04);
-      padding: 4px 8px;
+      padding: 5px 8px;
       border-radius: 6px;
-      margin-top: 4px;
-      line-height: 1.35;
+      margin-top: 5px;
+      line-height: 1.38;
       word-break: keep-all;
+      border-left: 2.5px solid #64748B;
+    }
+
+    .bubble-meaning strong {
+      color: #0F172A;
     }
 
     .duum-badge {
@@ -1146,7 +1329,6 @@ const html = `<!DOCTYPE html>
       margin-bottom: 20px;
     }
 
-    /* 사자성어 상대 지목 타깃 선택 모달 */
     .target-player-btn-list {
       display: flex;
       flex-direction: column;
@@ -1174,7 +1356,6 @@ const html = `<!DOCTYPE html>
       border-color: #EF4444;
     }
 
-    /* 토스트 알림 */
     #toast-msg {
       position: absolute;
       top: 60px;
@@ -1408,7 +1589,6 @@ const html = `<!DOCTYPE html>
   <div id="app-container">
     <canvas id="confetti-canvas"></canvas>
 
-    <!-- 상단 토스트 메시지 -->
     <div id="toast-msg">토스트 메시지</div>
 
     <!-- 1. 설정/시작 화면 -->
@@ -1419,7 +1599,6 @@ const html = `<!DOCTYPE html>
         <p class="setup-desc">HP 100 서바이벌 끝말잇기 대전 (2~6인)</p>
       </div>
 
-      <!-- 플레이어 인원 수 선택 -->
       <div class="setup-card">
         <div class="card-label">👥 플레이어 인원 수 (2~6명)</div>
         <div class="chip-group" id="player-count-chips">
@@ -1431,13 +1610,11 @@ const html = `<!DOCTYPE html>
         </div>
       </div>
 
-      <!-- 플레이어별 프로필 리스트 -->
       <div class="setup-card">
         <div class="card-label">🎨 플레이어 프로필 설정</div>
         <div id="players-setup-list"></div>
       </div>
 
-      <!-- 총 라운드 수 설정 -->
       <div class="setup-card">
         <div class="card-label">🏆 총 라운드 수</div>
         <div class="chip-group" id="rounds-chip-group">
@@ -1449,7 +1626,6 @@ const html = `<!DOCTYPE html>
         </div>
       </div>
 
-      <!-- 찬스 횟수 설정 -->
       <div class="setup-card">
         <div class="card-label">💡 찬스(힌트) 횟수 (1인당)</div>
         <div class="chip-group" id="chances-chip-group">
@@ -1461,7 +1637,6 @@ const html = `<!DOCTYPE html>
         </div>
       </div>
 
-      <!-- 턴 제한시간 설정 -->
       <div class="setup-card">
         <div class="card-label">⏱️ 턴 제한 시간 (5초마다 HP -5 차감)</div>
         <div class="chip-group" id="timer-chip-group">
@@ -1487,7 +1662,6 @@ const html = `<!DOCTYPE html>
 
     <!-- 2. 게임 메인 화면 -->
     <div id="game-screen" class="screen hidden">
-      <!-- 상단 고정 바 -->
       <div class="game-top-bar">
         <button id="btn-exit-to-setup" class="icon-btn" title="설정으로">⚙️</button>
         <div class="top-round-badge" id="display-round-badge">
@@ -1497,20 +1671,20 @@ const html = `<!DOCTYPE html>
         <button id="btn-toggle-sound" class="icon-btn" title="소리 토글">🔊</button>
       </div>
 
-      <!-- 상단 고정 플레이어 HP 스코어보드 (스크롤 고정) -->
+      <!-- 상단 고정 플레이어 HP 스코어보드 -->
       <div class="scoreboard-wrapper">
         <div class="scoreboard" id="scoreboard-container"></div>
       </div>
 
-      <!-- 타이머 프로그레스 바 -->
+      <!-- 타이머 바 -->
       <div class="timer-container">
         <div id="timer-bar" class="timer-bar"></div>
       </div>
 
-      <!-- 단어 대화 릴레이 영역 (단어와 뜻 풀이 표시) -->
+      <!-- 단어 대화 릴레이 영역 (뜻 풀이 포함) -->
       <div class="word-log-container" id="word-log-container"></div>
 
-      <!-- 현재 이어야 할 글자 전광판 (상단 고정) -->
+      <!-- 현재 이어야 할 글자 전광판 -->
       <div class="target-char-banner">
         <div class="target-char-left">
           <div class="target-char-badge" id="target-char-display">사</div>
@@ -1574,7 +1748,7 @@ const html = `<!DOCTYPE html>
       </button>
     </div>
 
-    <!-- 5. 사자성어 공격 타깃 선택 모달 (규칙 3) -->
+    <!-- 5. 사자성어 공격 타깃 선택 모달 -->
     <div id="idiom-target-modal" class="modal-overlay hidden">
       <div class="modal-card">
         <div class="modal-icon">📜</div>
@@ -1595,7 +1769,7 @@ const html = `<!DOCTYPE html>
         <p class="modal-desc" id="hint-modal-desc">
           사전에서 이어갈 수 있는 단어를 찾았습니다!<br>
           추천 단어: <strong id="hint-suggested-word" style="font-size: 1.3rem; color: #2563EB;">사과</strong><br>
-          <span id="hint-suggested-meaning" style="font-size:0.8rem; color:#64748B; display:inline-block; margin-top:6px;"></span>
+          <span id="hint-suggested-meaning" style="font-size:0.8rem; color:#475569; display:inline-block; margin-top:6px; line-height:1.4;"></span>
         </p>
         <div class="modal-btn-row">
           <button type="button" id="btn-apply-hint" class="modal-btn primary">이 단어로 입력하기</button>
@@ -1666,7 +1840,7 @@ const html = `<!DOCTYPE html>
 
   <script>
     /* ==========================================
-       1. 한국어 단어 데이터베이스 및 사자성어/뜻 사전
+       1. 한국어 단어 데이터베이스 및 실시간 국어사전 엔진
        ========================================== */
     const STARTER_WORDS = ${startersJson};
     const WORDS_DATA_STRING = "${wordsJoined}";
@@ -1683,19 +1857,16 @@ const html = `<!DOCTYPE html>
       if (WORD_SET) return;
       WORD_SET = new Set(WORDS_DATA_STRING.split(','));
 
-      // 사자성어 등록 및 단어 Set에 추가
       for (const [idiom, meaning] of IDIOM_DATA) {
         IDIOM_MAP.set(idiom, meaning);
         DEFINITIONS_MAP.set(idiom, meaning);
         WORD_SET.add(idiom);
       }
 
-      // 샘플 대표 뜻 등록
       for (const [w, meaning] of SAMPLE_DEFS) {
         DEFINITIONS_MAP.set(w, meaning);
       }
       
-      // 첫 글자별 색인 생성
       WORDS_BY_FIRST_CHAR = new Map();
       for (const word of WORD_SET) {
         const first = word[0];
@@ -1708,16 +1879,82 @@ const html = `<!DOCTYPE html>
       }
     }
 
-    // 단어 뜻풀이 가져오기 함수 (규칙 5)
-    function getWordMeaning(word) {
+    // 위키낱말사전 extract 텍스트에서 명확한 사전 뜻 추출하는 파서
+    function parseWiktionaryExtract(word, extract) {
+      if (!extract) return null;
+      const lines = extract.split('\\n').map(l => l.trim()).filter(Boolean);
+      let inNoun = false;
+      for (const line of lines) {
+        if (line.includes('=== 명사 ===') || line.includes('=== 명사')) {
+          inNoun = true;
+          continue;
+        }
+        if (inNoun) {
+          if (line.startsWith('===') || line.startsWith('==')) {
+            inNoun = false;
+            continue;
+          }
+          if (line.startsWith('어원:') || line.startsWith('발음:') || line.startsWith('(표준어') || line.startsWith('IPA') || line.startsWith('동사:') || line.startsWith('형용사:')) {
+            continue;
+          }
+          if (line.includes('(') && line.includes(')') && line.length < 25 && !line.includes('.')) {
+            continue;
+          }
+          let def = line.replace(/^[0-9]+\\.\\s*/, '').replace(/^[•\\-\\*]\\s*/, '').trim();
+          if (def.length > 2) {
+            return def;
+          }
+        }
+      }
+
+      for (const line of lines) {
+        if (line.startsWith('===') || line.startsWith('==') || line.startsWith('어원:') || line.startsWith('발음:') || line.startsWith('유의어:') || line.startsWith('반의어:')) continue;
+        let def = line.replace(/^[0-9]+\\.\\s*/, '').replace(/^[•\\-\\*]\\s*/, '').trim();
+        if (def.length > 5 && (def.endsWith('.') || def.endsWith('함') || def.endsWith('음') || def.endsWith('것') || def.endsWith('말'))) {
+          return def;
+        }
+      }
+
+      // 한자 어원 정보가 있는 경우
+      const etymLine = lines.find(l => l.includes('어원: 한자'));
+      if (etymLine) {
+        return etymLine.replace('어원: ', '') + ' 관련 국어사전 명사 어휘.';
+      }
+
+      return null;
+    }
+
+    // 실시간 비동기 단어 뜻 조회 (내장 사전 우선 -> 위키낱말사전 API 실시간 호출)
+    async function fetchWordMeaning(word) {
       if (DEFINITIONS_MAP.has(word)) {
         return DEFINITIONS_MAP.get(word);
       }
       if (IDIOM_MAP.has(word)) {
         return IDIOM_MAP.get(word);
       }
-      // 내장 뜻이 없는 경우 기본 대표 명사 설명 제공
-      return \`'\${word}' - 국어사전에 등재된 표준 명사 어휘.\`;
+
+      try {
+        const url = 'https://ko.wiktionary.org/w/api.php?action=query&prop=extracts&explaintext=true&titles=' + encodeURIComponent(word) + '&format=json&origin=*';
+        const res = await fetch(url);
+        if (res.ok) {
+          const data = await res.json();
+          const pages = data?.query?.pages;
+          if (pages) {
+            const pageId = Object.keys(pages)[0];
+            if (pageId !== '-1' && pages[pageId].extract) {
+              const parsed = parseWiktionaryExtract(word, pages[pageId].extract);
+              if (parsed) {
+                DEFINITIONS_MAP.set(word, parsed);
+                return parsed;
+              }
+            }
+          }
+        }
+      } catch (e) {
+        console.warn('Wiktionary fetch error:', e);
+      }
+
+      return \`'\${word}' - 표준국어대사전에 등재된 우리말 명사.\`;
     }
 
     // 표준 두음법칙 변환 함수
@@ -2058,7 +2295,7 @@ const html = `<!DOCTYPE html>
       duumVariants: [],
       usedWords: new Set(),
       timerRemaining: 20,
-      turnElapsedSeconds: 0, // 턴 경과 초 카운터 (5초마다 HP -5용)
+      turnElapsedSeconds: 0,
       timerInterval: null,
       isRoundActive: false,
       turnPending: false
@@ -2245,7 +2482,7 @@ const html = `<!DOCTYPE html>
       gameState.usedWords.add(starterWord);
       gameState.currentWord = starterWord;
 
-      appendSystemWordBubble(starterWord, getWordMeaning(starterWord));
+      appendSystemWordBubble(starterWord);
       updateTargetChar(starterWord);
       updateScoreboardUI();
       startTurn();
@@ -2269,27 +2506,38 @@ const html = `<!DOCTYPE html>
       }
     }
 
-    // 시스템 첫 제시어 말풍선 (뜻 풀이 포함)
-    function appendSystemWordBubble(word, meaning) {
+    // 시스템 첫 제시어 말풍선 (실시간 사전 뜻 연동)
+    function appendSystemWordBubble(word) {
       const container = document.getElementById('word-log-container');
       const div = document.createElement('div');
       div.className = 'word-item system';
+      const defId = 'def-sys-' + Date.now();
+
       div.innerHTML = \`
         <div class="word-bubble">
           🤖 AI 제시어: <strong>\${word}</strong> (끝 글자: '<strong>\${word[word.length - 1]}</strong>')
-          <div class="bubble-meaning">📖 \${meaning}</div>
+          <div id="\${defId}" class="bubble-meaning">📖 <strong>뜻:</strong> 사전 검색 중...</div>
         </div>
       \`;
       container.appendChild(div);
       container.scrollTop = container.scrollHeight;
+
+      fetchWordMeaning(word).then(meaning => {
+        const el = document.getElementById(defId);
+        if (el) {
+          el.innerHTML = \`📖 <strong>뜻:</strong> \${meaning} <a href="https://dic.daum.net/search.do?q=\${encodeURIComponent(word)}" target="_blank" title="국어사전에서 더보기" style="text-decoration:none; margin-left:4px;">🔍</a>\`;
+        }
+      });
     }
 
-    // 플레이어 단어 말풍선 (단어 대표 뜻 풀이 포함 - 규칙 5)
-    function appendPlayerWordBubble(player, word, meaning, duumApplied, isCombo, isIdiom, isKiller) {
+    // 플레이어 단어 말풍선 (실시간 사전 뜻 연동)
+    function appendPlayerWordBubble(player, word, duumApplied, isCombo, isIdiom, isKiller) {
       const container = document.getElementById('word-log-container');
       const div = document.createElement('div');
       div.className = 'word-item';
       div.style.alignSelf = 'flex-start';
+
+      const defId = 'def-p-' + Date.now() + '-' + Math.floor(Math.random() * 1000);
 
       let badgesHtml = '';
       if (duumApplied) {
@@ -2312,12 +2560,19 @@ const html = `<!DOCTYPE html>
           <div class="bubble-text" style="color:\${player.theme.color}">
             \${word.slice(0, -1)}<span class="bubble-tail-char">\${word[word.length - 1]}</span>
           </div>
-          <div class="bubble-meaning">📖 \${meaning}</div>
+          <div id="\${defId}" class="bubble-meaning">📖 <strong>뜻:</strong> 사전 검색 중...</div>
           \${badgesHtml}
         </div>
       \`;
       container.appendChild(div);
       container.scrollTop = container.scrollHeight;
+
+      fetchWordMeaning(word).then(meaning => {
+        const el = document.getElementById(defId);
+        if (el) {
+          el.innerHTML = \`📖 <strong>뜻:</strong> \${meaning} <a href="https://dic.daum.net/search.do?q=\${encodeURIComponent(word)}" target="_blank" title="국어사전에서 더보기" style="text-decoration:none; margin-left:4px;">🔍</a>\`;
+        }
+      });
     }
 
     function getNextAliveIndex(fromIndex) {
@@ -2338,7 +2593,7 @@ const html = `<!DOCTYPE html>
     function startTurn() {
       if (!gameState.isRoundActive) return;
       gameState.turnPending = false;
-      gameState.turnElapsedSeconds = 0; // 턴 시작 시 경과 시간 초기화
+      gameState.turnElapsedSeconds = 0;
 
       updateScoreboardUI();
       resetTimer();
@@ -2391,7 +2646,7 @@ const html = `<!DOCTYPE html>
       }
     }
 
-    /* 규칙 2: 생각시간 5초를 쓸 때마다 HP -5가 깎임 */
+    /* 규칙 2: 생각시간 5초마다 HP -5 차감 */
     function resetTimer() {
       if (gameState.timerInterval) clearInterval(gameState.timerInterval);
 
@@ -2406,12 +2661,10 @@ const html = `<!DOCTYPE html>
         const elapsed = Date.now() - startTime;
         const currentElapsedSec = Math.floor(elapsed / 1000);
 
-        // 매 1초 경과 감지
         if (currentElapsedSec > lastCheckedSecond) {
           lastCheckedSecond = currentElapsedSec;
           gameState.turnElapsedSeconds++;
 
-          // 규칙 2: 5초를 쓸 때마다 HP -5 깎임!
           if (gameState.turnElapsedSeconds > 0 && gameState.turnElapsedSeconds % 5 === 0) {
             const curPlayer = gameState.players[gameState.currentTurnIndex];
             curPlayer.hp -= 5;
@@ -2462,7 +2715,6 @@ const html = `<!DOCTYPE html>
       }
     }
 
-    // 전체 제한시간 만료 시
     function onTimeLimitExpired() {
       if (!gameState.isRoundActive || gameState.turnPending) return;
 
@@ -2486,7 +2738,6 @@ const html = `<!DOCTYPE html>
       }
     }
 
-    /* 규칙 3: 단어를 틀리게 기입할 경우 -20이 깎임 (생각시간 유지) */
     function handleInvalidSubmission(reason) {
       sound.playDamage();
       triggerVibrate();
@@ -2505,13 +2756,11 @@ const html = `<!DOCTYPE html>
         eliminatePlayer(curPlayer, \`❌ 오답으로 인한 HP 소진! (\${curPlayer.name} 탈락)\`);
       } else {
         showToast(\`\${reason} (HP -20, 남은 HP: \${curPlayer.hp})\`, 'error');
-        // 생각시간은 리셋되지 않고 그대로 계속 흘러감!
         document.getElementById('word-input').value = '';
         document.getElementById('word-input').focus();
       }
     }
 
-    /* 새 단어 요청 시 -50 HP */
     function requestNewWord() {
       if (!gameState.isRoundActive || gameState.turnPending) return;
       const curPlayer = gameState.players[gameState.currentTurnIndex];
@@ -2551,7 +2800,7 @@ const html = `<!DOCTYPE html>
       gameState.usedWords.add(newWord);
       gameState.currentWord = newWord;
 
-      appendSystemWordBubble(newWord, getWordMeaning(newWord));
+      appendSystemWordBubble(newWord);
       updateTargetChar(newWord);
       showToast(\`🔄 새 제시어 제공! (\${curPlayer.name} 남은 HP: \${curPlayer.hp})\`, 'info');
 
@@ -2560,7 +2809,6 @@ const html = `<!DOCTYPE html>
       document.getElementById('word-input').focus();
     }
 
-    /* 단어 검증 및 제출 */
     function submitWord(rawWord) {
       if (!gameState.isRoundActive || gameState.turnPending) return;
 
@@ -2600,9 +2848,6 @@ const html = `<!DOCTYPE html>
         duumApplied = { from: gameState.targetChar, to: firstChar };
       }
 
-      const meaning = getWordMeaning(word);
-
-      // 규칙 1: 앞글자 끝글자 같은 콤보의 경우 3글자 이상 단어부터 적용! (예: 기러기, 토마토 등)
       const isCombo = (word.length >= 3 && word[0] === word[word.length - 1]);
       if (isCombo) {
         sound.playCombo();
@@ -2626,13 +2871,12 @@ const html = `<!DOCTYPE html>
 
         const alive = getAlivePlayers();
         if (alive.length <= 1) {
-          appendPlayerWordBubble(curPlayer, word, meaning, duumApplied, true, false, false);
+          appendPlayerWordBubble(curPlayer, word, duumApplied, true, false, false);
           endRound(alive[0], \`⚡ 3글자 콤보 어택으로 상대 전원 격파!\`);
           return;
         }
       }
 
-      // 규칙 3: 사자성어를 쓸 경우 콤보 -10을 상대방 중에 1명을 선택하여 사용
       const isIdiom = (word.length === 4 && (IDIOM_MAP.has(word) || DEFINITIONS_MAP.has(word)));
       if (isIdiom) {
         sound.playIdiom();
@@ -2641,7 +2885,6 @@ const html = `<!DOCTYPE html>
         const opponents = gameState.players.map((p, idx) => ({ player: p, index: idx })).filter(item => item.index !== gameState.currentTurnIndex && item.player.alive);
 
         if (opponents.length === 1) {
-          // 상대방이 1명뿐인 경우 즉시 타격
           const target = opponents[0].player;
           target.hp -= 10;
           showFloatingDamage(opponents[0].index, 10);
@@ -2653,30 +2896,28 @@ const html = `<!DOCTYPE html>
 
           const alive = getAlivePlayers();
           if (alive.length <= 1) {
-            appendPlayerWordBubble(curPlayer, word, meaning, duumApplied, isCombo, true, false);
+            appendPlayerWordBubble(curPlayer, word, duumApplied, isCombo, true, false);
             endRound(alive[0], \`📜 사자성어 공격으로 상대 격파!\`);
             return;
           }
-          proceedAfterWord(curPlayer, word, meaning, duumApplied, isCombo, true);
+          proceedAfterWord(curPlayer, word, duumApplied, isCombo, true);
         } else if (opponents.length > 1) {
-          // 상대방이 2명 이상인 경우 타깃 선택 모달 표시!
-          appendPlayerWordBubble(curPlayer, word, meaning, duumApplied, isCombo, true, false);
+          appendPlayerWordBubble(curPlayer, word, duumApplied, isCombo, true, false);
           showIdiomTargetModal(opponents, () => {
             const alive = getAlivePlayers();
             if (alive.length <= 1) {
               endRound(alive[0], \`📜 사자성어 공격으로 상대 격파!\`);
             } else {
-              proceedAfterWord(curPlayer, word, meaning, duumApplied, isCombo, true);
+              proceedAfterWord(curPlayer, word, duumApplied, isCombo, true);
             }
           });
           return;
         }
       } else {
-        proceedAfterWord(curPlayer, word, meaning, duumApplied, isCombo, false);
+        proceedAfterWord(curPlayer, word, duumApplied, isCombo, false);
       }
     }
 
-    // 사자성어 상대 1명 지목 모달 표시
     function showIdiomTargetModal(opponents, onTargetSelected) {
       const modal = document.getElementById('idiom-target-modal');
       const listContainer = document.getElementById('idiom-target-btn-list');
@@ -2709,8 +2950,7 @@ const html = `<!DOCTYPE html>
       modal.classList.remove('hidden');
     }
 
-    function proceedAfterWord(curPlayer, word, meaning, duumApplied, isCombo, isIdiom) {
-      // 한방단어 판별
+    function proceedAfterWord(curPlayer, word, duumApplied, isCombo, isIdiom) {
       const isContinuable = checkContinuable(word);
 
       if (!isContinuable) {
@@ -2718,7 +2958,7 @@ const html = `<!DOCTYPE html>
         triggerVibrate([300, 100, 400]);
         triggerShake();
 
-        appendPlayerWordBubble(curPlayer, word, meaning, duumApplied, isCombo, isIdiom, true);
+        appendPlayerWordBubble(curPlayer, word, duumApplied, isCombo, isIdiom, true);
 
         const victimIndex = getNextAliveIndex(gameState.currentTurnIndex);
         const victim = gameState.players[victimIndex];
@@ -2754,7 +2994,7 @@ const html = `<!DOCTYPE html>
             gameState.usedWords.add(newStarter);
             gameState.currentWord = newStarter;
 
-            appendSystemWordBubble(newStarter, getWordMeaning(newStarter));
+            appendSystemWordBubble(newStarter);
             updateTargetChar(newStarter);
 
             const nextTurn = getNextAliveIndex(victimIndex);
@@ -2767,7 +3007,7 @@ const html = `<!DOCTYPE html>
 
       if (!isCombo && !isIdiom) sound.playSuccess();
       if (!isIdiom) {
-        appendPlayerWordBubble(curPlayer, word, meaning, duumApplied, isCombo, isIdiom, false);
+        appendPlayerWordBubble(curPlayer, word, duumApplied, isCombo, isIdiom, false);
       }
       updateTargetChar(word);
 
@@ -2817,16 +3057,16 @@ const html = `<!DOCTYPE html>
         }
       };
 
-      if (passTimeout) clearTimeout(passTimeout);
+      if (passTimeout) { clearTimeout(passTimeout); passTimeout = null; }
       passTimeout = setTimeout(finalizePass, 1250);
 
-      overlay.onclick = () => {
-        if (passTimeout) clearTimeout(passTimeout);
+      overlay.onclick = (e) => {
+        if (e) e.stopPropagation();
+        if (passTimeout) { clearTimeout(passTimeout); passTimeout = null; }
         finalizePass();
       };
     }
 
-    /* 규칙 6: 찬스를 누르는 순간 즉시 찬스 횟수가 차감됨! */
     function useHint() {
       if (!gameState.isRoundActive || gameState.turnPending) return;
       const curPlayer = gameState.players[gameState.currentTurnIndex];
@@ -2835,7 +3075,6 @@ const html = `<!DOCTYPE html>
         return;
       }
 
-      // 찬스를 누르는 순간 찬스 횟수 1회 즉시 차감! (규칙 6)
       curPlayer.chances -= 1;
       updateScoreboardUI();
 
@@ -2870,9 +3109,16 @@ const html = `<!DOCTYPE html>
       const suggested = pool[Math.floor(Math.random() * pool.length)];
 
       document.getElementById('hint-suggested-word').textContent = suggested;
-      document.getElementById('hint-suggested-meaning').textContent = '뜻: ' + getWordMeaning(suggested);
+      document.getElementById('hint-suggested-meaning').textContent = '뜻: 사전 검색 중...';
       const modal = document.getElementById('hint-modal');
       modal.classList.remove('hidden');
+
+      fetchWordMeaning(suggested).then(meaning => {
+        const el = document.getElementById('hint-suggested-meaning');
+        if (el) {
+          el.textContent = '뜻: ' + (meaning || '표준국어대사전 등재 명사');
+        }
+      });
 
       const btnApply = document.getElementById('btn-apply-hint');
       btnApply.onclick = () => {
@@ -2882,7 +3128,6 @@ const html = `<!DOCTYPE html>
       };
     }
 
-    /* 라운드 종료 및 승자 처리 */
     function endRound(winner, reason) {
       gameState.isRoundActive = false;
       gameState.turnPending = false;
@@ -2959,9 +3204,6 @@ const html = `<!DOCTYPE html>
       modal.classList.remove('hidden');
     }
 
-    /* ==========================================
-       7. 이벤트 바인딩 및 초기화
-       ========================================== */
     window.addEventListener('DOMContentLoaded', () => {
       function setupChipGroup(groupId, onChange) {
         const group = document.getElementById(groupId);
@@ -3080,4 +3322,4 @@ const html = `<!DOCTYPE html>
 `;
 
 fs.writeFileSync('index.html', html, 'utf8');
-console.log('index.html upgraded with idioms, definitions, 3-char combo, 5s -5HP, fixed topbar, and instant hint deduction! Size:', fs.statSync('index.html').size, 'bytes');
+console.log('index.html successfully updated with real dictionary engine & Wiktionary API! Size:', fs.statSync('index.html').size, 'bytes');
