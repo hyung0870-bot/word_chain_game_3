@@ -4,6 +4,128 @@ const data = JSON.parse(fs.readFileSync('words_data.json', 'utf8'));
 const startersJson = JSON.stringify(data.starters);
 const wordsJoined = data.wordsJoined;
 
+// 주요 사자성어 데이터 (단어 및 대표 의미)
+const IDIOM_LIST = [
+  ['가인박명', '아름다운 사람은 대개 운명이 기박함'],
+  ['각골난망', '은혜를 뼈에 새겨 잊지 아니함'],
+  ['감언이설', '남의 비위에 맞도록 꾸며 대는 달콤한 말'],
+  ['고진감래', '고생 끝에 즐거움이 옴'],
+  ['골육상잔', '가까운 혈육끼리 서로 해치고 싸움'],
+  ['공명정대', '마음이 공평하고 행동이 떳떳함'],
+  ['구사일생', '죽을 고비에서 겨우 살아남'],
+  ['군계일학', '평범한 사람들 가운데 뛰어난 한 사람'],
+  ['권선징악', '착한 일을 권하고 악한 일을 징벌함'],
+  ['금상첨화', '좋은 일 위에 더 좋은 일이 더해짐'],
+  ['금의환향', '성공하여 고향으로 자랑스럽게 돌아옴'],
+  ['난형난제', '누구를 형이라 아우라 하기 어려울 정도로 우열을 가리기 힘듦'],
+  ['남녀노소', '남자와 여자, 늙은이와 젊은이 모두'],
+  ['내유외강', '속은 부드럽고 겉은 굳셈'],
+  ['노심초사', '몹시 마음을 쓰며 애를 태움'],
+  ['다다익선', '많으면 많을수록 더욱 좋음'],
+  ['대기만성', '큰 그릇은 늦게 이루어지듯 크게 될 사람은 늦게 성공함'],
+  ['동고동락', '괴로움과 즐거움을 함께함'],
+  ['동문서답', '묻는 말에 전혀 엉뚱한 대답을 함'],
+  ['두문불출', '집에만 있고 바깥출입을 하지 아니함'],
+  ['마이동풍', '남의 말을 귀담아듣지 않고 흘려버림'],
+  ['막역지우', '허물이 없이 아주 친한 친구'],
+  ['명실상부', '이름과 실상이 서로 꼭 맞음'],
+  ['무용지물', '아무짝에도 쓸모없는 물건이나 사람'],
+  ['문전성시', '찾아오는 사람이 많아 집 앞이 시장처럼 붐빔'],
+  ['배은망덕', '은혜를 잊고 도리어 배신함'],
+  ['백년해로', '부부가 되어 평생을 함께 늙음'],
+  ['백발백중', '계획한 일이 다 들어맞음'],
+  ['백전백승', '싸울 때마다 언제나 이김'],
+  ['부창부수', '남편이 부르고 아내가 따름, 부부 화합'],
+  ['사필귀정', '모든 일은 반드시 바른길로 돌아감'],
+  ['살신성인', '목숨을 바쳐 어진 뜻을 이룸'],
+  ['삼고초려', '인재를 얻기 위해 정성을 다해 찾아감'],
+  ['새옹지마', '인생의 길흉화복은 예측하기 어려움'],
+  ['설상가상', '어려운 일에 또 어려운 일이 겹침'],
+  ['수수방관', '팔짱을 끼고 바라만 봄'],
+  ['순망치한', '입술이 없으면 이가 시리듯 밀접한 관계'],
+  ['심기일전', '마음가짐을 바로잡고 새롭게 출발함'],
+  ['십시일반', '여럿이 힘을 합쳐 한 사람을 도움'],
+  ['아전인수', '자기에게 유리하게만 행동함'],
+  ['안하무인', '방자하여 사람을 깔봄'],
+  ['약육강식', '약한 자가 강한 자에게 먹힘'],
+  ['양두구육', '겉과 속이 서로 다름'],
+  ['어부지리', '둘이 다투는 틈에 제삼자가 이득을 봄'],
+  ['역지사지', '처지를 바꾸어 다른 사람의 입장에서 생각함'],
+  ['온고지신', '옛것을 익혀 새로운 지식을 앎'],
+  ['용두사미', '시작은 거창하나 끝이 흐지부지함'],
+  ['우공이산', '끈기 있게 노력하면 결국 큰일을 이룸'],
+  ['우유부단', '어물어물 결단을 내리지 못함'],
+  ['유비무환', '준비가 있으면 걱정이 없음'],
+  ['이심전심', '말하지 않아도 마음이 통함'],
+  ['일거양득', '한 가지 일로 두 가지 이득을 얻음'],
+  ['일석이조', '돌 하나로 두 마리 새를 잡음, 일거양득'],
+  ['일취월장', '날마다 눈부시게 발전함'],
+  ['자가당착', '자신의 언행이 앞뒤가 맞지 않고 모순됨'],
+  ['자수성가', '스스로 힘으로 큰일을 이룸'],
+  ['작심삼일', '결심한 마음이 사흘을 가지 못함'],
+  ['전화위복', '재앙이 바뀌어 오히려 복이 됨'],
+  ['조삼모사', '눈앞의 차이에만 현혹되어 결과가 같음을 모름'],
+  ['주경야독', '낮에는 일하고 밤에는 글을 읽음'],
+  ['죽마고우', '어릴 때부터 같이 놀던 친한 벗'],
+  ['중구난방', '여러 사람의 말이 제각각 분분함'],
+  ['진퇴양난', '나아갈 수도 물러설 수도 없는 난처한 처지'],
+  ['천생연분', '하늘이 맺어 준 깊은 인연'],
+  ['청출어람', '제자가 스승보다 더 뛰어남'],
+  ['초지일관', '처음 품은 뜻을 끝까지 밀고 나감'],
+  ['칠전팔기', '일곱 번 넘어져도 여덟 번 일어남'],
+  ['타산지석', '남의 잘못도 교훈으로 삼음'],
+  ['토사구팽', '쓸모가 없어지면 가차 없이 버림'],
+  ['파죽지세', '거침없이 맹렬하게 내달림'],
+  ['풍전등화', '바람 앞의 등불처럼 매우 위태로운 처지'],
+  ['학수고대', '학처럼 목을 길게 빼고 간절히 기다림'],
+  ['호형호제', '친형제처럼 사이좋게 지냄'],
+  ['화룡점정', '가장 중요한 마지막 마무리를 함']
+];
+
+// 다빈도 명사 대표 뜻 사전 (샘플 및 대표 명사)
+const SAMPLE_DEFINITIONS = [
+  ['사과', '사과나무의 열매. 새콤달콤한 맛이 나는 과일.'],
+  ['바나나', '열대 식물의 열매. 껍질이 노랗고 부드러운 과일.'],
+  ['기차', '레일 위를 달리는 승객과 화물 수송용 차량.'],
+  ['기러기', '겨울에 날아오는 철새의 일종.'],
+  ['토마토', '붉은색의 영양가 높은 채소 열매.'],
+  ['스위스', '알프스산맥에 위치한 유럽의 중립국.'],
+  ['오디오', '소리를 재생하거나 녹음하는 음향 기기.'],
+  ['하늘', '지표면 위로 펼쳐진 넓고 푸른 공간.'],
+  ['바다', '지구 표면의 대부분을 덮고 있는 거대한 짠물.'],
+  ['구름', '공기 중의 수증기가 엉겨 하늘에 떠 있는 것.'],
+  ['친구', '오래 두고 가깝게 사귄 벗.'],
+  ['학교', '학생을 모아 일정한 교육을 실시하는 교육 기관.'],
+  ['학생', '학교에서 학문을 배우는 사람.'],
+  ['선생님', '학생을 가르치고 인도하는 사람.'],
+  ['피아노', '건반을 눌러 해머로 줄을 쳐 소리를 내는 악기.'],
+  ['음악', '소리를 재료로 하여 감정을 표현하는 시간 예술.'],
+  ['컴퓨터', '데이터를 입력받아 처리하는 전자 계산 장치.'],
+  ['비행기', '날개와 엔진을 갖추고 공중을 날아다니는 항공기.'],
+  ['자동차', '원동기를 장치하여 바퀴를 굴려 가는 차량.'],
+  ['호랑이', '고양잇과의 사나운 맹수.'],
+  ['사자', '동물의 왕이라 불리는 고양잇과 맹수.'],
+  ['강아지', '개의 새끼 또는 귀엽게 이르는 말.'],
+  ['고양이', '사람과 친숙한 털이 부드러운 애완동물.'],
+  ['토끼', '귀가 길고 꼬리가 짧은 귀여운 초식동물.'],
+  ['사탕', '설탕을 주원료로 하여 굳혀 만든 달콤한 과자.'],
+  ['과자', '곡물 가루를 반죽하여 기름에 튀기거나 구운 간식.'],
+  ['자전거', '두 바퀴를 발로 페달을 밟아 움직이는 탈것.'],
+  ['거울', '빛을 반사하여 사물의 모습을 비추어 보는 도구.'],
+  ['울타리', '풀이나 나무, 철조망 등으로 둘러막은 경계.'],
+  ['리본', '선물이나 머리를 장식하는 비단 띠.'],
+  ['본관', '성씨가 처음 시작된 고향 또는 중심 건물.'],
+  ['관람', '영화나 연극, 미술품 등을 구경함.'],
+  ['람보', '용감하고 강인한 전사를 비유적으로 이르는 말.'],
+  ['보물', '매우 귀중하고 가치 있는 물건.'],
+  ['물고기', '물속에서 아가미로 숨을 쉬며 사는 척추동물.'],
+  ['우주', '모든 물질과 공간, 천체를 포함하는 총체.'],
+  ['지구', '인류가 살고 있는 태양계의 행성.'],
+  ['사랑', '어떤 대상을 몹시 아끼고 귀중히 여기는 마음.'],
+  ['행복', '생활에서 기쁨과 만족을 느껴 흐뭇한 상태.'],
+  ['희망', '앞일에 대하여 거는 기대와 바람.']
+];
+
 const html = `<!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -50,7 +172,6 @@ const html = `<!DOCTYPE html>
       overflow: hidden;
     }
 
-    /* 모바일 프레임 컨테이너 */
     #app-container {
       width: 100%;
       max-width: 450px;
@@ -73,7 +194,6 @@ const html = `<!DOCTYPE html>
       }
     }
 
-    /* 화면 기본 스타일 */
     .screen {
       position: absolute;
       top: 0;
@@ -195,7 +315,6 @@ const html = `<!DOCTYPE html>
       user-select: text;
     }
 
-    /* 플레이어 프로필 목록 */
     #players-setup-list {
       display: flex;
       flex-direction: column;
@@ -294,11 +413,16 @@ const html = `<!DOCTYPE html>
       box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
     }
 
-    /* 2. 게임 메인 화면 */
+    /* 2. 게임 메인 화면 (상단 완전 고정 레이아웃) */
     #game-screen {
       background: #F8FAFC;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow: hidden;
     }
 
+    /* 상단 고정 헤더 바 */
     .game-top-bar {
       display: flex;
       align-items: center;
@@ -307,6 +431,7 @@ const html = `<!DOCTYPE html>
       background: #FFFFFF;
       border-bottom: 1px solid #F1F5F9;
       flex-shrink: 0;
+      z-index: 50;
     }
 
     .top-round-badge {
@@ -335,15 +460,17 @@ const html = `<!DOCTYPE html>
       transition: background 0.15s;
     }
 
-    /* 상단 플레이어 HP 스코어보드 */
+    /* 상단 고정 플레이어 스코어보드 (스크롤 절대 안 밀림!) */
     .scoreboard-wrapper {
       background: #FFFFFF;
       padding: 6px 10px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
-      position: relative;
-      z-index: 5;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+      position: sticky;
+      top: 0;
+      z-index: 45;
       flex-shrink: 0;
       overflow-x: auto;
+      border-bottom: 1px solid #E2E8F0;
     }
 
     .scoreboard {
@@ -365,7 +492,7 @@ const html = `<!DOCTYPE html>
       position: relative;
       transition: all 0.25s ease;
       border: 2px solid transparent;
-      opacity: 0.6;
+      opacity: 0.65;
       transform: scale(0.96);
       background: #F1F5F9;
     }
@@ -423,7 +550,6 @@ const html = `<!DOCTYPE html>
       text-overflow: ellipsis;
     }
 
-    /* HP 게이지 바 */
     .hp-gauge-container {
       width: 90%;
       height: 7px;
@@ -471,7 +597,6 @@ const html = `<!DOCTYPE html>
       border-radius: var(--radius-full);
     }
 
-    /* 플로팅 데미지 텍스트 */
     .floating-damage {
       position: absolute;
       top: 10px;
@@ -493,7 +618,6 @@ const html = `<!DOCTYPE html>
       100% { opacity: 0; transform: translate(-50%, -36px) scale(0.8); }
     }
 
-    /* 타이머 바 */
     .timer-container {
       width: 100%;
       height: 5px;
@@ -501,6 +625,7 @@ const html = `<!DOCTYPE html>
       position: relative;
       overflow: hidden;
       flex-shrink: 0;
+      z-index: 40;
     }
 
     .timer-bar {
@@ -520,14 +645,14 @@ const html = `<!DOCTYPE html>
       100% { opacity: 1; }
     }
 
-    /* 단어 릴레이 대화 뷰 */
+    /* 단어 릴레이 대화 뷰 (오직 이 영역만 스크롤!) */
     .word-log-container {
       flex: 1;
       overflow-y: auto;
       padding: 10px 12px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 10px;
       scroll-behavior: smooth;
     }
 
@@ -535,7 +660,7 @@ const html = `<!DOCTYPE html>
       display: flex;
       align-items: flex-end;
       gap: 8px;
-      max-width: 88%;
+      max-width: 90%;
       animation: fadeInUp 0.2s ease-out;
     }
 
@@ -546,7 +671,7 @@ const html = `<!DOCTYPE html>
 
     .word-item.system {
       align-self: center;
-      max-width: 94%;
+      max-width: 95%;
       text-align: center;
       margin: 2px 0 4px 0;
     }
@@ -605,6 +730,19 @@ const html = `<!DOCTYPE html>
       font-weight: 900;
     }
 
+    /* 단어 대표 뜻 풀이 표시 */
+    .bubble-meaning {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: #475569;
+      background: rgba(0, 0, 0, 0.04);
+      padding: 4px 8px;
+      border-radius: 6px;
+      margin-top: 4px;
+      line-height: 1.35;
+      word-break: keep-all;
+    }
+
     .duum-badge {
       display: inline-block;
       font-size: 0.65rem;
@@ -629,6 +767,18 @@ const html = `<!DOCTYPE html>
       animation: pulse-combo 0.6s infinite alternate;
     }
 
+    .idiom-badge {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 900;
+      background: #E0E7FF;
+      color: #3730A3;
+      padding: 2px 8px;
+      border-radius: var(--radius-full);
+      margin-top: 3px;
+      border: 1px solid #C7D2FE;
+    }
+
     @keyframes pulse-combo {
       0% { transform: scale(1); }
       100% { transform: scale(1.06); }
@@ -646,7 +796,7 @@ const html = `<!DOCTYPE html>
       animation: pulse-danger 0.6s infinite alternate;
     }
 
-    /* 현재 이어갈 글자 전광판 */
+    /* 현재 이어갈 글자 전광판 (상단 고정) */
     .target-char-banner {
       background: #FFFFFF;
       padding: 8px 12px;
@@ -656,6 +806,7 @@ const html = `<!DOCTYPE html>
       align-items: center;
       justify-content: space-between;
       flex-shrink: 0;
+      z-index: 35;
     }
 
     .target-char-left {
@@ -716,7 +867,7 @@ const html = `<!DOCTYPE html>
       background: #FEE2E2;
     }
 
-    /* 하단 입력 조작 영역 */
+    /* 하단 입력 독 */
     .input-dock {
       padding: 8px 12px 12px 12px;
       background: #FFFFFF;
@@ -725,6 +876,7 @@ const html = `<!DOCTYPE html>
       gap: 8px;
       box-shadow: 0 -4px 12px rgba(0,0,0,0.03);
       flex-shrink: 0;
+      z-index: 40;
     }
 
     .dock-actions-row {
@@ -942,7 +1094,6 @@ const html = `<!DOCTYPE html>
       font-weight: 600;
     }
 
-    /* 콤보 어택 화면 섬광 */
     .screen-combo-flash {
       animation: comboFlashAnim 0.6s ease-out;
     }
@@ -952,7 +1103,6 @@ const html = `<!DOCTYPE html>
       100% { box-shadow: inset 0 0 0 rgba(234, 179, 8, 0); }
     }
 
-    /* 한방단어 킬 알림 팝업 오버레이 */
     #killer-overlay {
       position: absolute;
       top: 0;
@@ -996,6 +1146,34 @@ const html = `<!DOCTYPE html>
       margin-bottom: 20px;
     }
 
+    /* 사자성어 상대 지목 타깃 선택 모달 */
+    .target-player-btn-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 14px 0;
+    }
+
+    .target-player-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      background: #F8FAFC;
+      border: 1.5px solid #CBD5E1;
+      font-size: 0.95rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .target-player-btn:active {
+      transform: scale(0.98);
+      background: #FEF2F2;
+      border-color: #EF4444;
+    }
+
     /* 토스트 알림 */
     #toast-msg {
       position: absolute;
@@ -1028,8 +1206,8 @@ const html = `<!DOCTYPE html>
     #toast-msg.info { background: #2563EB; }
     #toast-msg.success { background: #10B981; }
     #toast-msg.combo { background: #D97706; }
+    #toast-msg.idiom { background: #4F46E5; }
 
-    /* 진동/흔들림 */
     .shake {
       animation: shake-anim 0.35s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
     }
@@ -1041,7 +1219,6 @@ const html = `<!DOCTYPE html>
       40%, 60% { transform: translate3d(6px, 0, 0); }
     }
 
-    /* 모달 공통 */
     .modal-overlay {
       position: absolute;
       top: 0;
@@ -1148,7 +1325,6 @@ const html = `<!DOCTYPE html>
       z-index: 115;
     }
 
-    /* 리더보드 순위표 */
     .leaderboard-list {
       display: flex;
       flex-direction: column;
@@ -1201,7 +1377,6 @@ const html = `<!DOCTYPE html>
       color: #2563EB;
     }
 
-    /* 규칙 리스트 */
     .rules-list {
       text-align: left;
       font-size: 0.82rem;
@@ -1256,7 +1431,7 @@ const html = `<!DOCTYPE html>
         </div>
       </div>
 
-      <!-- 플레이어별 프로필 리스트 (동적 렌더링) -->
+      <!-- 플레이어별 프로필 리스트 -->
       <div class="setup-card">
         <div class="card-label">🎨 플레이어 프로필 설정</div>
         <div id="players-setup-list"></div>
@@ -1286,11 +1461,10 @@ const html = `<!DOCTYPE html>
         </div>
       </div>
 
-      <!-- 턴 제한시간 설정 (최대 60초) -->
+      <!-- 턴 제한시간 설정 -->
       <div class="setup-card">
-        <div class="card-label">⏱️ 턴 생각 시간 (초과 시 HP -10)</div>
+        <div class="card-label">⏱️ 턴 제한 시간 (5초마다 HP -5 차감)</div>
         <div class="chip-group" id="timer-chip-group">
-          <button type="button" class="chip-btn" data-time="10">10초</button>
           <button type="button" class="chip-btn" data-time="15">15초</button>
           <button type="button" class="chip-btn active" data-time="20">20초</button>
           <button type="button" class="chip-btn" data-time="30">30초</button>
@@ -1306,14 +1480,14 @@ const html = `<!DOCTYPE html>
 
       <div style="text-align: center; margin-top: 4px;">
         <button type="button" id="btn-show-rules" style="background: none; border: none; font-size: 0.8rem; color: #64748B; text-decoration: underline; cursor: pointer;">
-          📖 HP 배틀 룰 및 콤보어택 규칙 보기
+          📖 HP 배틀 룰 및 사자성어 공격 규칙 보기
         </button>
       </div>
     </div>
 
     <!-- 2. 게임 메인 화면 -->
     <div id="game-screen" class="screen hidden">
-      <!-- 상단 바 -->
+      <!-- 상단 고정 바 -->
       <div class="game-top-bar">
         <button id="btn-exit-to-setup" class="icon-btn" title="설정으로">⚙️</button>
         <div class="top-round-badge" id="display-round-badge">
@@ -1323,7 +1497,7 @@ const html = `<!DOCTYPE html>
         <button id="btn-toggle-sound" class="icon-btn" title="소리 토글">🔊</button>
       </div>
 
-      <!-- 다인 스코어보드 (HP 게이지 포함) -->
+      <!-- 상단 고정 플레이어 HP 스코어보드 (스크롤 고정) -->
       <div class="scoreboard-wrapper">
         <div class="scoreboard" id="scoreboard-container"></div>
       </div>
@@ -1333,10 +1507,10 @@ const html = `<!DOCTYPE html>
         <div id="timer-bar" class="timer-bar"></div>
       </div>
 
-      <!-- 단어 대화 릴레이 영역 -->
+      <!-- 단어 대화 릴레이 영역 (단어와 뜻 풀이 표시) -->
       <div class="word-log-container" id="word-log-container"></div>
 
-      <!-- 현재 이어야 할 글자 전광판 -->
+      <!-- 현재 이어야 할 글자 전광판 (상단 고정) -->
       <div class="target-char-banner">
         <div class="target-char-left">
           <div class="target-char-badge" id="target-char-display">사</div>
@@ -1364,7 +1538,7 @@ const html = `<!DOCTYPE html>
         </div>
 
         <form id="word-form" class="input-form-row" onsubmit="return false;">
-          <input type="text" id="word-input" class="word-input" placeholder="한글 단어 입력" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+          <input type="text" id="word-input" class="word-input" placeholder="한글 단어 또는 사자성어 입력" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
           <button type="submit" id="btn-submit-word" class="submit-btn">제출</button>
         </form>
       </div>
@@ -1400,14 +1574,28 @@ const html = `<!DOCTYPE html>
       </button>
     </div>
 
-    <!-- 5. 힌트 모달 -->
+    <!-- 5. 사자성어 공격 타깃 선택 모달 (규칙 3) -->
+    <div id="idiom-target-modal" class="modal-overlay hidden">
+      <div class="modal-card">
+        <div class="modal-icon">📜</div>
+        <h3 class="modal-title">사자성어 공격!</h3>
+        <p class="modal-desc" id="idiom-target-desc">
+          사자성어를 입력하여 <strong style="color:#4F46E5;">타깃 콤보 -10 HP</strong>가 발동했습니다!<br>
+          공격할 상대 1명을 선택하세요:
+        </p>
+        <div class="target-player-btn-list" id="idiom-target-btn-list"></div>
+      </div>
+    </div>
+
+    <!-- 6. 힌트 모달 -->
     <div id="hint-modal" class="modal-overlay hidden">
       <div class="modal-card">
         <div class="modal-icon">💡</div>
         <h3 class="modal-title">찬스 단어 추천</h3>
         <p class="modal-desc" id="hint-modal-desc">
           사전에서 이어갈 수 있는 단어를 찾았습니다!<br>
-          추천 단어: <strong id="hint-suggested-word" style="font-size: 1.3rem; color: #2563EB;">사과</strong>
+          추천 단어: <strong id="hint-suggested-word" style="font-size: 1.3rem; color: #2563EB;">사과</strong><br>
+          <span id="hint-suggested-meaning" style="font-size:0.8rem; color:#64748B; display:inline-block; margin-top:6px;"></span>
         </p>
         <div class="modal-btn-row">
           <button type="button" id="btn-apply-hint" class="modal-btn primary">이 단어로 입력하기</button>
@@ -1416,7 +1604,7 @@ const html = `<!DOCTYPE html>
       </div>
     </div>
 
-    <!-- 6. 라운드 종료 모달 -->
+    <!-- 7. 라운드 종료 모달 -->
     <div id="round-modal" class="modal-overlay hidden">
       <div class="modal-card">
         <div class="modal-icon" id="round-modal-icon">🎉</div>
@@ -1431,7 +1619,7 @@ const html = `<!DOCTYPE html>
       </div>
     </div>
 
-    <!-- 7. 최종 게임 종료 모달 -->
+    <!-- 8. 최종 게임 종료 모달 -->
     <div id="gameover-modal" class="modal-overlay hidden">
       <div class="modal-card">
         <div class="modal-icon">🏆</div>
@@ -1451,20 +1639,24 @@ const html = `<!DOCTYPE html>
       </div>
     </div>
 
-    <!-- 8. 규칙 설명 모달 -->
+    <!-- 9. 규칙 설명 모달 -->
     <div id="rules-modal" class="modal-overlay hidden">
       <div class="modal-card">
         <div class="modal-icon">📖</div>
         <h3 class="modal-title">HP 배틀 게임 규칙</h3>
         <ul class="rules-list">
           <li><strong>💖 HP 100 시작</strong>: 각 라운드마다 모든 플레이어는 HP 100을 보유하며, 0이 되면 즉시 탈락합니다.</li>
-          <li><strong>⏱️ 생각시간 초과 시</strong>: <strong>HP -10</strong> 차감되며, <u>생각시간(타이머)이 리셋되어</u> 다시 고민할 수 있습니다.</li>
-          <li><strong>❌ 오답 입력 시</strong>: <strong>HP -20</strong> 차감되며, <u>생각시간은 리셋되지 않고 유지된 채</u> 즉시 다시 입력해야 합니다.</li>
-          <li><strong>🔄 새 단어 요청</strong>: 연결할 단어를 모를 때 클릭하면 <strong>HP -50</strong>이 깎이고 AI가 새로운 첫 단어를 제공합니다.</li>
-          <li><strong>⚡ 콤보 어택 (시작=끝 글자)</strong>:
-            앞 글자와 뒷 글자가 동일한 단어(예: <strong>기러기, 토마토, 스위스, 오디오, 수수</strong> 등)를 제시하면 <strong>살아있는 상대방 전원에게 콤보어택 HP -20</strong>을 입힙니다!
+          <li><strong>⏱️ 생각시간 5초마다 HP -5</strong>: 자신의 턴에 생각시간 5초를 쓸 때마다 <strong>HP -5</strong>가 깎입니다!</li>
+          <li><strong>❌ 오답 입력 시 HP -20</strong>: 틀리게 기입하면 <strong>HP -20</strong>이 깎이며, <u>생각시간은 리셋되지 않고 유지된 채</u> 즉시 다시 입력해야 합니다.</li>
+          <li><strong>🔄 새 단어 요청 시 HP -50</strong>: 연결할 단어를 모를 때 누르면 <strong>HP -50</strong>을 소모하고 AI가 새로운 첫 단어를 제공합니다.</li>
+          <li><strong>⚡ 콤보 어택 (3글자 이상)</strong>:
+            <strong>3글자 이상</strong>이면서 앞 글자와 뒷 글자가 동일한 단어(예: <strong>기러기, 토마토, 스위스, 오디오, 일요일</strong> 등) 제시 시 <strong>상대 전원에게 HP -20 콤보 타격</strong>! (2글자는 제외)
           </li>
-          <li><strong>💥 한방단어 작렬</strong>: 이을 단어가 사전에 전혀 없는 단어를 제시하면 다음 플레이어는 찬스도 못 쓰고 <strong>즉시 탈락</strong>합니다.</li>
+          <li><strong>📜 사자성어 콤보 (-10 HP)</strong>:
+            사자성어를 제시하면 <strong>살아있는 상대방 중 1명을 직접 선택하여 HP -10 타격</strong>!
+          </li>
+          <li><strong>💡 찬스 즉시 차감</strong>: 찬스는 누르는 순간 1회가 즉시 차감됩니다.</li>
+          <li><strong>💥 한방단어 작렬</strong>: 이을 단어가 사전에 없는 단어 제시 시 다음 플레이어는 즉시 탈락합니다.</li>
         </ul>
         <button type="button" id="btn-close-rules" class="modal-btn primary">확인</button>
       </div>
@@ -1474,18 +1666,36 @@ const html = `<!DOCTYPE html>
 
   <script>
     /* ==========================================
-       1. 한국어 단어 데이터베이스 및 두음법칙 로직
+       1. 한국어 단어 데이터베이스 및 사자성어/뜻 사전
        ========================================== */
     const STARTER_WORDS = ${startersJson};
     const WORDS_DATA_STRING = "${wordsJoined}";
 
+    const IDIOM_DATA = ${JSON.stringify(IDIOM_LIST)};
+    const SAMPLE_DEFS = ${JSON.stringify(SAMPLE_DEFINITIONS)};
+
     let WORD_SET = null;
     let WORDS_BY_FIRST_CHAR = null;
+    let IDIOM_MAP = new Map();
+    let DEFINITIONS_MAP = new Map();
 
     function initDictionary() {
       if (WORD_SET) return;
       WORD_SET = new Set(WORDS_DATA_STRING.split(','));
+
+      // 사자성어 등록 및 단어 Set에 추가
+      for (const [idiom, meaning] of IDIOM_DATA) {
+        IDIOM_MAP.set(idiom, meaning);
+        DEFINITIONS_MAP.set(idiom, meaning);
+        WORD_SET.add(idiom);
+      }
+
+      // 샘플 대표 뜻 등록
+      for (const [w, meaning] of SAMPLE_DEFS) {
+        DEFINITIONS_MAP.set(w, meaning);
+      }
       
+      // 첫 글자별 색인 생성
       WORDS_BY_FIRST_CHAR = new Map();
       for (const word of WORD_SET) {
         const first = word[0];
@@ -1496,6 +1706,18 @@ const html = `<!DOCTYPE html>
         }
         list.push(word);
       }
+    }
+
+    // 단어 뜻풀이 가져오기 함수 (규칙 5)
+    function getWordMeaning(word) {
+      if (DEFINITIONS_MAP.has(word)) {
+        return DEFINITIONS_MAP.get(word);
+      }
+      if (IDIOM_MAP.has(word)) {
+        return IDIOM_MAP.get(word);
+      }
+      // 내장 뜻이 없는 경우 기본 대표 명사 설명 제공
+      return \`'\${word}' - 국어사전에 등재된 표준 명사 어휘.\`;
     }
 
     // 표준 두음법칙 변환 함수
@@ -1530,7 +1752,6 @@ const html = `<!DOCTYPE html>
         variants.add(String.fromCharCode(0xAC00 + (11 * 21 * 28) + (jungseong * 28) + jongseong));
       }
 
-      // 끝말잇기 특수 난해 글자
       if (char === '륨') { variants.add('윰'); variants.add('늄'); variants.add('움'); }
       if (char === '늄') { variants.add('윰'); variants.add('움'); variants.add('륨'); }
       if (char === '릇') { variants.add('늣'); variants.add('읏'); }
@@ -1539,7 +1760,7 @@ const html = `<!DOCTYPE html>
       return Array.from(variants);
     }
 
-    // 이을 수 있는 미사용 단어가 있는지 확인 (한방단어 판별)
+    // 한방단어 판별
     function checkContinuable(word) {
       if (!word) return false;
       const lastChar = word[word.length - 1];
@@ -1632,6 +1853,24 @@ const html = `<!DOCTYPE html>
         gain.connect(this.ctx.destination);
         osc.start(now);
         osc.stop(now + 0.45);
+      }
+
+      playIdiom() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(659.25, now);
+        osc.frequency.setValueAtTime(987.77, now + 0.1);
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.4);
       }
 
       playKiller() {
@@ -1809,7 +2048,7 @@ const html = `<!DOCTYPE html>
       maxChances: 2,
       timeLimit: 20,
 
-      players: [], // { id, name, avatar, score, hp, chances, alive, theme }
+      players: [],
 
       currentRound: 1,
       currentTurnIndex: 0,
@@ -1819,6 +2058,7 @@ const html = `<!DOCTYPE html>
       duumVariants: [],
       usedWords: new Set(),
       timerRemaining: 20,
+      turnElapsedSeconds: 0, // 턴 경과 초 카운터 (5초마다 HP -5용)
       timerInterval: null,
       isRoundActive: false,
       turnPending: false
@@ -1853,7 +2093,6 @@ const html = `<!DOCTYPE html>
       setTimeout(() => el.classList.remove('shake'), 400);
     }
 
-    // 카드 위에 플로팅 데미지 표시 (-10, -20, -50 등)
     function showFloatingDamage(playerIndex, amount) {
       const card = document.getElementById(\`card-player-\${playerIndex}\`);
       if (!card) return;
@@ -1928,7 +2167,7 @@ const html = `<!DOCTYPE html>
           name: name,
           avatar: avatar,
           score: 0,
-          hp: 100, // 시작 HP 100
+          hp: 100,
           chances: gameState.maxChances,
           alive: true,
           theme: PLAYER_THEMES[i]
@@ -1982,7 +2221,6 @@ const html = `<!DOCTYPE html>
       gameState.turnPending = false;
       gameState.usedWords.clear();
 
-      // 전원 HP 100 리셋 및 생존 처리
       gameState.players.forEach(p => {
         p.hp = 100;
         p.chances = gameState.maxChances;
@@ -1994,7 +2232,6 @@ const html = `<!DOCTYPE html>
 
       document.getElementById('word-log-container').innerHTML = '';
 
-      // 안전한 AI 첫 제시어
       let starterWord = '';
       for (let attempt = 0; attempt < 50; attempt++) {
         const candidate = STARTER_WORDS[Math.floor(Math.random() * STARTER_WORDS.length)];
@@ -2008,7 +2245,7 @@ const html = `<!DOCTYPE html>
       gameState.usedWords.add(starterWord);
       gameState.currentWord = starterWord;
 
-      appendSystemWordBubble(starterWord);
+      appendSystemWordBubble(starterWord, getWordMeaning(starterWord));
       updateTargetChar(starterWord);
       updateScoreboardUI();
       startTurn();
@@ -2032,20 +2269,23 @@ const html = `<!DOCTYPE html>
       }
     }
 
-    function appendSystemWordBubble(word, prefix = '🤖 AI 첫 제시어') {
+    // 시스템 첫 제시어 말풍선 (뜻 풀이 포함)
+    function appendSystemWordBubble(word, meaning) {
       const container = document.getElementById('word-log-container');
       const div = document.createElement('div');
       div.className = 'word-item system';
       div.innerHTML = \`
         <div class="word-bubble">
-          \${prefix}: <strong>\${word}</strong> (끝 글자: '<strong>\${word[word.length - 1]}</strong>')
+          🤖 AI 제시어: <strong>\${word}</strong> (끝 글자: '<strong>\${word[word.length - 1]}</strong>')
+          <div class="bubble-meaning">📖 \${meaning}</div>
         </div>
       \`;
       container.appendChild(div);
       container.scrollTop = container.scrollHeight;
     }
 
-    function appendPlayerWordBubble(player, word, duumApplied, isCombo, isKiller) {
+    // 플레이어 단어 말풍선 (단어 대표 뜻 풀이 포함 - 규칙 5)
+    function appendPlayerWordBubble(player, word, meaning, duumApplied, isCombo, isIdiom, isKiller) {
       const container = document.getElementById('word-log-container');
       const div = document.createElement('div');
       div.className = 'word-item';
@@ -2056,7 +2296,10 @@ const html = `<!DOCTYPE html>
         badgesHtml += \`<div class="duum-badge">두음법칙: \${duumApplied.from} ➔ \${duumApplied.to}</div>\`;
       }
       if (isCombo) {
-        badgesHtml += \`<div class="combo-badge">⚡ 콤보어택! (전체 -20 HP)</div>\`;
+        badgesHtml += \`<div class="combo-badge">⚡ 3글자+ 콤보어택! (전체 -20 HP)</div>\`;
+      }
+      if (isIdiom) {
+        badgesHtml += \`<div class="idiom-badge">📜 사자성어 콤보! (타깃 -10 HP)</div>\`;
       }
       if (isKiller) {
         badgesHtml += \`<div class="killer-badge">💥 한방단어 작렬!</div>\`;
@@ -2069,6 +2312,7 @@ const html = `<!DOCTYPE html>
           <div class="bubble-text" style="color:\${player.theme.color}">
             \${word.slice(0, -1)}<span class="bubble-tail-char">\${word[word.length - 1]}</span>
           </div>
+          <div class="bubble-meaning">📖 \${meaning}</div>
           \${badgesHtml}
         </div>
       \`;
@@ -2094,6 +2338,7 @@ const html = `<!DOCTYPE html>
     function startTurn() {
       if (!gameState.isRoundActive) return;
       gameState.turnPending = false;
+      gameState.turnElapsedSeconds = 0; // 턴 시작 시 경과 시간 초기화
 
       updateScoreboardUI();
       resetTimer();
@@ -2113,7 +2358,6 @@ const html = `<!DOCTYPE html>
         document.getElementById(\`disp-score-\${idx}\`).textContent = p.score;
         document.getElementById(\`disp-chance-\${idx}\`).textContent = p.chances;
 
-        // HP 게이지 업데이트
         const hpPercent = Math.max(0, p.hp);
         const hpBar = document.getElementById(\`hp-bar-\${idx}\`);
         const hpVal = document.getElementById(\`hp-val-\${idx}\`);
@@ -2147,7 +2391,7 @@ const html = `<!DOCTYPE html>
       }
     }
 
-    /* 타이머 로직 (규칙 2: 시간 초과 시 HP -10 차감 후 생각시간 리셋) */
+    /* 규칙 2: 생각시간 5초를 쓸 때마다 HP -5가 깎임 */
     function resetTimer() {
       if (gameState.timerInterval) clearInterval(gameState.timerInterval);
 
@@ -2156,9 +2400,38 @@ const html = `<!DOCTYPE html>
 
       const startTime = Date.now();
       const totalDuration = gameState.timeLimit * 1000;
+      let lastCheckedSecond = 0;
 
       gameState.timerInterval = setInterval(() => {
         const elapsed = Date.now() - startTime;
+        const currentElapsedSec = Math.floor(elapsed / 1000);
+
+        // 매 1초 경과 감지
+        if (currentElapsedSec > lastCheckedSecond) {
+          lastCheckedSecond = currentElapsedSec;
+          gameState.turnElapsedSeconds++;
+
+          // 규칙 2: 5초를 쓸 때마다 HP -5 깎임!
+          if (gameState.turnElapsedSeconds > 0 && gameState.turnElapsedSeconds % 5 === 0) {
+            const curPlayer = gameState.players[gameState.currentTurnIndex];
+            curPlayer.hp -= 5;
+            sound.playDamage();
+            showFloatingDamage(gameState.currentTurnIndex, 5);
+            updateScoreboardUI();
+
+            if (curPlayer.hp <= 0) {
+              curPlayer.hp = 0;
+              curPlayer.alive = false;
+              updateScoreboardUI();
+              clearInterval(gameState.timerInterval);
+              eliminatePlayer(curPlayer, \`⏱️ 생각시간 누적으로 HP 소진! (\${curPlayer.name} 탈락)\`);
+              return;
+            } else {
+              showToast(\`⏱️ 생각시간 5초 경과! (HP -5, 남은 HP: \${curPlayer.hp})\`, 'error');
+            }
+          }
+        }
+
         const remaining = Math.max(0, totalDuration - elapsed);
         gameState.timerRemaining = Math.ceil(remaining / 1000);
 
@@ -2170,7 +2443,7 @@ const html = `<!DOCTYPE html>
 
         if (remaining <= 0) {
           clearInterval(gameState.timerInterval);
-          onTimeOut();
+          onTimeLimitExpired();
         }
       }, 100);
     }
@@ -2189,8 +2462,8 @@ const html = `<!DOCTYPE html>
       }
     }
 
-    // 규칙 2: 시간을 초과하면 -10이 깎이고 생각시간이 리셋됨
-    function onTimeOut() {
+    // 전체 제한시간 만료 시
+    function onTimeLimitExpired() {
       if (!gameState.isRoundActive || gameState.turnPending) return;
 
       const curPlayer = gameState.players[gameState.currentTurnIndex];
@@ -2202,20 +2475,18 @@ const html = `<!DOCTYPE html>
       updateScoreboardUI();
 
       if (curPlayer.hp <= 0) {
-        // HP 소진으로 사망!
         curPlayer.hp = 0;
         curPlayer.alive = false;
         updateScoreboardUI();
-        eliminatePlayer(curPlayer, \`⏰ \${curPlayer.name}님 HP 소진으로 탈락!\`);
+        eliminatePlayer(curPlayer, \`⏰ 제한시간 초과로 HP 소진! (\${curPlayer.name} 탈락)\`);
       } else {
-        // HP 남아있음 -> 생각시간 리셋 후 계속 고민!
-        showToast(\`⏰ 시간 초과! HP -10 (\${curPlayer.name} HP: \${curPlayer.hp})\`, 'error');
+        showToast(\`⏰ 턴 제한시간 만료! HP -10 (\${curPlayer.name} HP: \${curPlayer.hp})\`, 'error');
         resetTimer();
         document.getElementById('word-input').focus();
       }
     }
 
-    /* 규칙 3: 단어를 틀리게 기입할 경우 -20이 깎임 (그리고 다시 기입 가능, 생각시간은 유지됨) */
+    /* 규칙 3: 단어를 틀리게 기입할 경우 -20이 깎임 (생각시간 유지) */
     function handleInvalidSubmission(reason) {
       sound.playDamage();
       triggerVibrate();
@@ -2234,13 +2505,13 @@ const html = `<!DOCTYPE html>
         eliminatePlayer(curPlayer, \`❌ 오답으로 인한 HP 소진! (\${curPlayer.name} 탈락)\`);
       } else {
         showToast(\`\${reason} (HP -20, 남은 HP: \${curPlayer.hp})\`, 'error');
-        // 생각시간은 리셋되지 않고 그대로 흘러가며, 입력창만 초기화하여 즉시 다시 기입 가능!
+        // 생각시간은 리셋되지 않고 그대로 계속 흘러감!
         document.getElementById('word-input').value = '';
         document.getElementById('word-input').focus();
       }
     }
 
-    /* 규칙 4: 연결할 단어를 몰라서 새 단어를 요청할 경우 -50이 깎임 */
+    /* 새 단어 요청 시 -50 HP */
     function requestNewWord() {
       if (!gameState.isRoundActive || gameState.turnPending) return;
       const curPlayer = gameState.players[gameState.currentTurnIndex];
@@ -2267,7 +2538,6 @@ const html = `<!DOCTYPE html>
         return;
       }
 
-      // 새 단어 제공 및 타이머 리셋
       let newWord = '';
       for (let attempt = 0; attempt < 50; attempt++) {
         const candidate = STARTER_WORDS[Math.floor(Math.random() * STARTER_WORDS.length)];
@@ -2281,11 +2551,10 @@ const html = `<!DOCTYPE html>
       gameState.usedWords.add(newWord);
       gameState.currentWord = newWord;
 
-      appendSystemWordBubble(newWord, \`🔄 \${curPlayer.name} 새 단어 요청 (HP -50)\`);
+      appendSystemWordBubble(newWord, getWordMeaning(newWord));
       updateTargetChar(newWord);
       showToast(\`🔄 새 제시어 제공! (\${curPlayer.name} 남은 HP: \${curPlayer.hp})\`, 'info');
 
-      // 생각시간 리셋 후 현재 플레이어가 바로 이어서 입력
       resetTimer();
       document.getElementById('word-input').value = '';
       document.getElementById('word-input').focus();
@@ -2298,13 +2567,11 @@ const html = `<!DOCTYPE html>
       const word = (rawWord || document.getElementById('word-input').value).trim();
       const curPlayer = gameState.players[gameState.currentTurnIndex];
 
-      // 1. 형식 검사 (2글자 이상 한글)
       if (!/^[가-힣]{2,}$/.test(word)) {
         handleInvalidSubmission('두 글자 이상의 한글 단어만 입력 가능합니다!');
         return;
       }
 
-      // 2. 끝말잇기 규칙 검사
       const firstChar = word[0];
       const isValidInitial = gameState.duumVariants.includes(firstChar);
       if (!isValidInitial) {
@@ -2313,42 +2580,38 @@ const html = `<!DOCTYPE html>
         return;
       }
 
-      // 3. 중복 단어 검사
       if (gameState.usedWords.has(word)) {
         handleInvalidSubmission(\`'\${word}'은(는) 이미 사용된 단어입니다!\`);
         return;
       }
 
-      // 4. 국어사전 검사
       if (!WORD_SET.has(word)) {
-        handleInvalidSubmission(\`'\${word}'은(는) 국어사전에 없는 명사입니다!\`);
+        handleInvalidSubmission(\`'\${word}'은(는) 국어사전에 없는 단어입니다!\`);
         return;
       }
 
-      // 검증 성공!
       if (gameState.timerInterval) clearInterval(gameState.timerInterval);
       gameState.turnPending = true;
       gameState.usedWords.add(word);
       gameState.currentWord = word;
 
-      // 두음법칙 적용 여부
       let duumApplied = null;
       if (firstChar !== gameState.targetChar) {
         duumApplied = { from: gameState.targetChar, to: firstChar };
       }
 
-      // 규칙 5: 끝글자로 시작하고 같은글자로 마무리되는 단어 제시 시 -> 상대방 모두에게 콤보어택 -20!
-      // (예: 기러기, 토마토, 스위스, 오디오 등)
-      const isCombo = (word.length >= 2 && word[0] === word[word.length - 1]);
+      const meaning = getWordMeaning(word);
+
+      // 규칙 1: 앞글자 끝글자 같은 콤보의 경우 3글자 이상 단어부터 적용! (예: 기러기, 토마토 등)
+      const isCombo = (word.length >= 3 && word[0] === word[word.length - 1]);
       if (isCombo) {
         sound.playCombo();
         triggerVibrate([100, 50, 100, 50, 200]);
         document.getElementById('app-container').classList.add('screen-combo-flash');
         setTimeout(() => document.getElementById('app-container').classList.remove('screen-combo-flash'), 650);
 
-        showToast(\`⚡ COMBO ATTACK! '\${word}'! 상대방 전체 HP -20! ⚡\`, 'combo');
+        showToast(\`⚡ 3글자+ 콤보어택! '\${word}'! 상대 전체 HP -20! ⚡\`, 'combo');
 
-        // 상대방 전원 HP -20
         gameState.players.forEach((p, idx) => {
           if (idx !== gameState.currentTurnIndex && p.alive) {
             p.hp -= 20;
@@ -2361,25 +2624,101 @@ const html = `<!DOCTYPE html>
         });
         updateScoreboardUI();
 
-        // 콤보어택으로 인한 생존자 확인
         const alive = getAlivePlayers();
         if (alive.length <= 1) {
-          appendPlayerWordBubble(curPlayer, word, duumApplied, true, false);
-          endRound(alive[0], \`⚡ 콤보 어택으로 상대 전원 격파!\`);
+          appendPlayerWordBubble(curPlayer, word, meaning, duumApplied, true, false, false);
+          endRound(alive[0], \`⚡ 3글자 콤보 어택으로 상대 전원 격파!\`);
           return;
         }
       }
 
-      // 한방단어(이을 단어가 없는 단어) 검사
+      // 규칙 3: 사자성어를 쓸 경우 콤보 -10을 상대방 중에 1명을 선택하여 사용
+      const isIdiom = (word.length === 4 && (IDIOM_MAP.has(word) || DEFINITIONS_MAP.has(word)));
+      if (isIdiom) {
+        sound.playIdiom();
+        showToast(\`📜 사자성어 발동! '\${word}'! (상대 1명에게 -10 HP 타격)\`, 'idiom');
+
+        const opponents = gameState.players.map((p, idx) => ({ player: p, index: idx })).filter(item => item.index !== gameState.currentTurnIndex && item.player.alive);
+
+        if (opponents.length === 1) {
+          // 상대방이 1명뿐인 경우 즉시 타격
+          const target = opponents[0].player;
+          target.hp -= 10;
+          showFloatingDamage(opponents[0].index, 10);
+          if (target.hp <= 0) {
+            target.hp = 0;
+            target.alive = false;
+          }
+          updateScoreboardUI();
+
+          const alive = getAlivePlayers();
+          if (alive.length <= 1) {
+            appendPlayerWordBubble(curPlayer, word, meaning, duumApplied, isCombo, true, false);
+            endRound(alive[0], \`📜 사자성어 공격으로 상대 격파!\`);
+            return;
+          }
+          proceedAfterWord(curPlayer, word, meaning, duumApplied, isCombo, true);
+        } else if (opponents.length > 1) {
+          // 상대방이 2명 이상인 경우 타깃 선택 모달 표시!
+          appendPlayerWordBubble(curPlayer, word, meaning, duumApplied, isCombo, true, false);
+          showIdiomTargetModal(opponents, () => {
+            const alive = getAlivePlayers();
+            if (alive.length <= 1) {
+              endRound(alive[0], \`📜 사자성어 공격으로 상대 격파!\`);
+            } else {
+              proceedAfterWord(curPlayer, word, meaning, duumApplied, isCombo, true);
+            }
+          });
+          return;
+        }
+      } else {
+        proceedAfterWord(curPlayer, word, meaning, duumApplied, isCombo, false);
+      }
+    }
+
+    // 사자성어 상대 1명 지목 모달 표시
+    function showIdiomTargetModal(opponents, onTargetSelected) {
+      const modal = document.getElementById('idiom-target-modal');
+      const listContainer = document.getElementById('idiom-target-btn-list');
+      listContainer.innerHTML = '';
+
+      opponents.forEach(item => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'target-player-btn';
+        btn.innerHTML = \`
+          <span>\${item.player.avatar} \${item.player.name}</span>
+          <span style="color:#EF4444; font-size:0.85rem;">HP \${item.player.hp} ➔ \${Math.max(0, item.player.hp - 10)}</span>
+        \`;
+        btn.onclick = () => {
+          modal.classList.add('hidden');
+          item.player.hp -= 10;
+          showFloatingDamage(item.index, 10);
+          sound.playDamage();
+          if (item.player.hp <= 0) {
+            item.player.hp = 0;
+            item.player.alive = false;
+          }
+          updateScoreboardUI();
+          showToast(\`🎯 \${item.player.name}님에게 사자성어 -10 HP 타격!\`, 'idiom');
+          onTargetSelected();
+        };
+        listContainer.appendChild(btn);
+      });
+
+      modal.classList.remove('hidden');
+    }
+
+    function proceedAfterWord(curPlayer, word, meaning, duumApplied, isCombo, isIdiom) {
+      // 한방단어 판별
       const isContinuable = checkContinuable(word);
 
       if (!isContinuable) {
-        // 💥 한방단어 작렬! -> 다음 차례 플레이어 찬스 쓸 틈도 없이 즉시 사망
         sound.playKiller();
         triggerVibrate([300, 100, 400]);
         triggerShake();
 
-        appendPlayerWordBubble(curPlayer, word, duumApplied, isCombo, true);
+        appendPlayerWordBubble(curPlayer, word, meaning, duumApplied, isCombo, isIdiom, true);
 
         const victimIndex = getNextAliveIndex(gameState.currentTurnIndex);
         const victim = gameState.players[victimIndex];
@@ -2415,7 +2754,7 @@ const html = `<!DOCTYPE html>
             gameState.usedWords.add(newStarter);
             gameState.currentWord = newStarter;
 
-            appendSystemWordBubble(newStarter);
+            appendSystemWordBubble(newStarter, getWordMeaning(newStarter));
             updateTargetChar(newStarter);
 
             const nextTurn = getNextAliveIndex(victimIndex);
@@ -2423,13 +2762,13 @@ const html = `<!DOCTYPE html>
             triggerPassAndPlay(nextTurn, gameState.players[nextTurn]);
           }
         };
-
         return;
       }
 
-      // 일반 성공
-      if (!isCombo) sound.playSuccess();
-      appendPlayerWordBubble(curPlayer, word, duumApplied, isCombo, false);
+      if (!isCombo && !isIdiom) sound.playSuccess();
+      if (!isIdiom) {
+        appendPlayerWordBubble(curPlayer, word, meaning, duumApplied, isCombo, isIdiom, false);
+      }
       updateTargetChar(word);
 
       document.getElementById('word-input').value = '';
@@ -2452,8 +2791,6 @@ const html = `<!DOCTYPE html>
       }
     }
 
-    /* 패스앤플레이 화면 전환 */
-    let passTimeout = null;
     function triggerPassAndPlay(nextTurn, nextPlayer) {
       sound.playPass();
       const overlay = document.getElementById('pass-overlay');
@@ -2487,7 +2824,7 @@ const html = `<!DOCTYPE html>
       };
     }
 
-    /* 찬스(힌트) 시스템 */
+    /* 규칙 6: 찬스를 누르는 순간 즉시 찬스 횟수가 차감됨! */
     function useHint() {
       if (!gameState.isRoundActive || gameState.turnPending) return;
       const curPlayer = gameState.players[gameState.currentTurnIndex];
@@ -2495,6 +2832,10 @@ const html = `<!DOCTYPE html>
         showToast('남은 찬스가 없습니다!', 'error');
         return;
       }
+
+      // 찬스를 누르는 순간 찬스 횟수 1회 즉시 차감! (규칙 6)
+      curPlayer.chances -= 1;
+      updateScoreboardUI();
 
       const possibleChars = gameState.duumVariants;
       let candidateWords = [];
@@ -2527,14 +2868,13 @@ const html = `<!DOCTYPE html>
       const suggested = pool[Math.floor(Math.random() * pool.length)];
 
       document.getElementById('hint-suggested-word').textContent = suggested;
+      document.getElementById('hint-suggested-meaning').textContent = '뜻: ' + getWordMeaning(suggested);
       const modal = document.getElementById('hint-modal');
       modal.classList.remove('hidden');
 
       const btnApply = document.getElementById('btn-apply-hint');
       btnApply.onclick = () => {
         modal.classList.add('hidden');
-        curPlayer.chances -= 1;
-        updateScoreboardUI();
         document.getElementById('word-input').value = suggested;
         submitWord(suggested);
       };
@@ -2600,7 +2940,6 @@ const html = `<!DOCTYPE html>
       });
     }
 
-    /* 최종 게임 종료 화면 */
     function showGameOver() {
       sound.playVictory();
       confetti.start();
@@ -2696,7 +3035,6 @@ const html = `<!DOCTYPE html>
 
       document.getElementById('btn-use-hint').onclick = useHint;
 
-      // 규칙 4: 새 단어 요청 버튼
       document.getElementById('btn-reset-word').onclick = requestNewWord;
 
       document.getElementById('btn-surrender').onclick = () => {
@@ -2740,4 +3078,4 @@ const html = `<!DOCTYPE html>
 `;
 
 fs.writeFileSync('index.html', html, 'utf8');
-console.log('index.html updated with HP battle & combo attack rules! Size:', fs.statSync('index.html').size, 'bytes');
+console.log('index.html upgraded with idioms, definitions, 3-char combo, 5s -5HP, fixed topbar, and instant hint deduction! Size:', fs.statSync('index.html').size, 'bytes');
